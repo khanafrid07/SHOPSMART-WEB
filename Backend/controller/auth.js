@@ -135,6 +135,7 @@ const googleLogin = async (req, res) => {
 
         if (!user) {
             user = new User({ name, email, provider: "google" });
+            await sendWelcomeMail(user)
             await user.save();
         }
 
