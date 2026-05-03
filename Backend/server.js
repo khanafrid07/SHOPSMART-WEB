@@ -39,11 +39,14 @@ app.use("/api/dashboard", dashboardStats)
 
 let port = process.env.PORT || 8080
 
+app.get("*", (req, res) => {
+    res.send("404 Not Found")
+})
 app.use((err, req, res, next) => {
     let { status = 500, message = "Internal server error" } = err
     res.status(status).json({ message })
 })
 
 app.listen(port, () => {
-    ("App listening to port", port)
+    console.log("App listening to port", port)
 })
