@@ -8,7 +8,7 @@ import { notifyError, notifySuccess } from "../../utils/notify.js";
 export default function Payment() {
   const { currentAddress } = useSelector((state) => state.auth);
   const { data: cartData, isLoading, isError } = useGetCartQuery();
-  const [createOrder] = useCreateOrderMutation();
+  const [createOrder, { isLoading: createLoading }] = useCreateOrderMutation();
   const [clearCart] = useClearCartMutation();
   const navigate = useNavigate();
   const stripe = useStripe();
@@ -185,7 +185,7 @@ export default function Payment() {
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold mb-4">Payment Method</h2>
           <div className="flex flex-col gap-2 mb-4">
-            {["Cash", "Online", "Card"].map((method) => (
+            {["Cash", "Card"].map((method) => (
               <label key={method} className="flex items-center gap-2">
                 <input
                   type="radio"
@@ -193,7 +193,7 @@ export default function Payment() {
                   value={method}
                   onChange={(e) => setPaymentMethod(e.target.value)}
                 />
-                {method === "Online" ? "UPI" : method}
+                {method === "Cash" ? "Cash on Delivery" : method}
               </label>
             ))}
             {paymentMethod === "Card" && (
@@ -224,8 +224,8 @@ export default function Payment() {
             )}
           </div>
 
-          <button disabled={loading} onClick={handleSubmit} className="btn btn-primary disabled:opacity-50 mt-4 w-full">
-            {loading ? "Processing" : "Pay now"}
+          <button disabled={loading || createLoading} onClick={handleSubmit} className="btn btn-primary disabled:opacity-50 mt-4 w-full">
+            {loading ? "Processing" : createLoading ? "Creating Order" : "Pay now"}
           </button>
         </div>
 

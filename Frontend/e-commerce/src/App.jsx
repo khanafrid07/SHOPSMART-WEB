@@ -26,7 +26,7 @@ import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js";
 import BannerForm from "./features/Banners/form/BannerForm.jsx";
 import BannerManagement from "./Pages/admin/BannerManagement.jsx";
-
+import NotFound from "./components/common/NotFound.jsx";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import ScrollToSection from "./features/products/section/ScrollToSection.jsx";
@@ -44,6 +44,7 @@ function AppContent() {
   return (
     <Routes>
       {/* User pages wrapped in UserLayout */}
+      <Route path="*" element={<NotFound />} />
       <Route element={<UserLayout />}>
 
         <Route index element={<Home />} />
@@ -95,6 +96,7 @@ export default function App() {
         <ScrollToSection />
         <Toaster position="top-center" toastOptions={{ style: { zIndex: 9999, position: "relative", top: "50px", transform: "translateX(-50%)" } }} />
         <AppContent />
+
       </Router>
     </ErrorBoundary>
   );

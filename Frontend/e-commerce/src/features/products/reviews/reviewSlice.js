@@ -6,7 +6,7 @@ export const reviewApi = createApi({
   tagTypes: ["reviews"],
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/api",
+    baseUrl: `${import.meta.env.VITE_API_URL}/api` || "http://localhost:8080/api",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {

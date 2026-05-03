@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const bannerApi = createApi({
     reducerPath: "bannerApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:8080/api", prepareHeaders: (headers) => {
+        baseUrl: `${import.meta.env.VITE_API_URL}/api` || "http://localhost:8080/api", prepareHeaders: (headers) => {
             const token = localStorage.getItem("token")
             if (token) {
                 headers.set("Authorization", `Bearer ${token}`)
@@ -68,11 +68,11 @@ export const bannerApi = createApi({
     })
 })
 
-export const { 
-    useGetBannerQuery, 
+export const {
+    useGetBannerQuery,
     useGetBannerByIdQuery,
-    useCreateBannerMutation, 
+    useCreateBannerMutation,
     useUpdateBannerMutation,
-    useUpdateBannerStatusMutation, 
-    useDeleteBannerMutation 
+    useUpdateBannerStatusMutation,
+    useDeleteBannerMutation
 } = bannerApi

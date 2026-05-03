@@ -10,6 +10,7 @@ import { notifySuccess, notifyError } from "../../../utils/notify"
 import SuggestedProduct from "../section/SuggestedProduct"
 import Reviews from "../reviews/Reviews"
 import { useSelector } from "react-redux"
+import ProductDetailSkeleton from "../../../components/skeletons/ProductDetailSkeleton"
 
 export default function ProductDetail() {
     const { id } = useParams()
@@ -26,9 +27,6 @@ export default function ProductDetail() {
         }
     }, [product])
 
-    if (isLoading) {
-        return <div>Loading...</div>
-    }
 
     const handleAddToCart = async () => {
         if (!user) return notifyError("Please login to add item to cart");
@@ -51,17 +49,18 @@ export default function ProductDetail() {
 
     return (
         <div>
-
+            {isLoading && <ProductDetailSkeleton />}
             <div className="grid md:grid-cols-2 gap-3 py-4">
 
                 <ProductImageGallery images={selectedVariant?.images?.length > 0 ? selectedVariant.images : product?.images || []} />
                 <div className="px-2 md:px-4">
+                    {!isLoading && <>
+                        <ProductInfo info={selectedVariant} product={product} />
 
-                    <ProductInfo info={selectedVariant} product={product} />
-
-                    <ProductVariants images={product?.images} info={product} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} allVariant={product?.variants} />
-                    <CartAndPrice onAdding={handleAddToCart} stock={selectedVariant?.stock} />
-                    <Reviews refetch={refetch} reviews={product?.reviews || []} />
+                        <ProductVariants images={product?.images} info={product} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} allVariant={product?.variants} />
+                        <CartAndPrice onAdding={handleAddToCart} stock={selectedVariant?.stock} />
+                        <Reviews refetch={refetch} reviews={product?.reviews || []} />
+                    </>}
 
                 </div>
 

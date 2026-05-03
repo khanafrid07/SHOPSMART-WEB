@@ -19,7 +19,7 @@ const CategoryCard = memo(({ item, gender }) => {
         src={item.image}
         alt={item.name}
         loading="lazy"
-        className="w-full h-44 sm:h-52 md:h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+        className="w-full h-44 sm:h-62 md:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
       />
 
 

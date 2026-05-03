@@ -54,7 +54,7 @@ export default function Navbar({ wishCount = 0 }) {
     if (!searchQuery.trim()) { setSuggestions([]); return; }
     const t = setTimeout(async () => {
       try {
-        const r = await fetch(`http://localhost:8080/api/products?search=${encodeURIComponent(searchQuery)}`);
+        const r = await fetch(`${import.meta.env.VITE_API_URL}/api/products?search=${encodeURIComponent(searchQuery)}`);
         const d = await r.json();
         setSuggestions(d.allProducts || []);
       } catch { }

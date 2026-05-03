@@ -3,7 +3,7 @@ import ProductCard from "../components/ProductCard";
 import { ArrowRight, Loader2, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import ProductCardSkeleton from "../../../components/skeletons/productCardSkeleton";
-
+import { motion } from "framer-motion";
 export default function FeaturedProduct({ gender, category }) {
   const { isLoading, data } = useGetProductsQuery({
     sort: "featured",
@@ -79,13 +79,16 @@ export default function FeaturedProduct({ gender, category }) {
             className="flex gap-5 sm:gap-8 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4"
           >
             {allProducts.length > 0 ? (
-              allProducts.map((product) => (
-                <div
+              allProducts.map((product, index) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.3 }}
                   key={product._id}
                   className="max-w-[190px] sm:min-w-[240px] md:min-w-[260px] flex-shrink-0 snap-start transition-transform duration-300 hover:scale-[1.04]"
                 >
                   <ProductCard product={product} featured />
-                </div>
+                </motion.div>
               ))
             ) : (
               <div className="w-full flex flex-col items-center justify-center py-14">

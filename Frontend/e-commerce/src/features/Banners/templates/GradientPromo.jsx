@@ -11,7 +11,7 @@ export default function GradientPromo({ banner }) {
       {/* IMAGE */}
       {banner.image && (
         <img
-          src={banner.image}
+          src={banner?.image?.url}
           alt={banner.title}
           className="absolute w-full h-full object-cover group-hover:scale-105 transition duration-700"
         />
@@ -35,6 +35,7 @@ export default function GradientPromo({ banner }) {
             </p>
           )}
         </div>
+
 
         {/* CTA */}
         {banner.ctaText && (
