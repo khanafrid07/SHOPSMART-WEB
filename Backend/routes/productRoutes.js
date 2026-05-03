@@ -3,7 +3,7 @@ const router = express.Router()
 const { verifyAdmin } = require("../middlewares/verifyUser.js")
 const upload = require("../config/multer.js")
 const { validate } = require("../middlewares/validate.js")
-const { productSchema } = require("../../Shared/Schema/ProductSchema.js")
+const { productSchema } = require("../shared/ProductSchema.js")
 
 const { getProducts, getProductById, updateProduct, deleteProduct, createProduct } = require("../controller/product.js");
 const parseFormData = (req, res, next) => {
