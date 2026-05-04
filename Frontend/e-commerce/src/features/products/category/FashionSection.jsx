@@ -13,8 +13,8 @@ import jeansImage from "../../../assets/Fashion/jeans.jpg";
 import jacketsImage from "../../../assets/Fashion/jackets.jpg";
 import hoodiesImage from "../../../assets/Fashion/hoodies.jpg";
 import topsImage from "../../../assets/Fashion/tops.jpg";
-import womenJeans from "../../../assets/Fashion/womenjeans.jpg";
-import womenJacket from "../../../assets/Fashion/womenjacket.jpg";
+import womenJeans from "../../../assets/Fashion/womenJeans.jpg";
+import womenJacket from "../../../assets/Fashion/womenJacket.jpg";
 
 
 const CATEGORIES = {
