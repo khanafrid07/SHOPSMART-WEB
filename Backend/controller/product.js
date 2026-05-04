@@ -162,6 +162,11 @@ const createProduct = async (req, res) => {
         const uploadToCloudinary = async (file, folder) => {
             const result = await cloudinary.uploader.upload(file.path, {
                 folder,
+                transformation: [
+                    { width: 1000, crop: "limit" },
+                    { quality: "auto" },
+                    { fetch_format: "auto" }
+                ]
             });
 
             fs.unlink(file.path, () => { }); // non-blocking delete
@@ -309,6 +314,11 @@ const updateProduct = async (req, res) => {
         const uploadToCloudinary = async (file, folder) => {
             const result = await cloudinary.uploader.upload(file.path, {
                 folder,
+                transformation: [
+                    { width: 1000, crop: "limit" },
+                    { quality: "auto" },
+                    { fetch_format: "auto" }
+                ]
             });
 
             fs.unlink(file.path, () => { });

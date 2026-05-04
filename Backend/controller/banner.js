@@ -1,6 +1,7 @@
 const expressError = require("../middlewares/expressError.js");
 const Banner = require("../models/banner.js")
-
+const cloudinary = require("../config/cloudinary.js");
+const fs = require("fs");
 const createBanner = async (req, res) => {
 
     const { title, heading, subHeading, ctaText, ctaLink, type, placement, category, template, isActive, schedule } = req.body;
@@ -19,6 +20,15 @@ const createBanner = async (req, res) => {
 
     const newPriority = lastBanner ? lastBanner.priority + 1 : 1;
 
+    const result = await cloudinary.uploader.upload(img.path, {
+        folder: "banners",
+        transformation: [
+            { width: 1600, crop: "limit" },
+            { quality: "auto" },
+            { fetch_format: "auto" }
+        ]
+    });
+    fs.unlink(img.path, () => { });
     const banner = new Banner({
         title,
         heading,
@@ -33,7 +43,11 @@ const createBanner = async (req, res) => {
         isActive: isActive !== undefined ? isActive : true,
         schedule,
 
-        image: `${req.protocol}://${req.get("host")}/uploads/${img.filename}`
+        image: {
+            url: result.secure_url,
+            fileName: img.originalname,
+            public_id: result.public_id
+        }
     });
 
     await banner.save();
@@ -101,8 +115,23 @@ const updateBanner = async (req, res) => {
 
     const { title, heading, subHeading, ctaText, ctaLink, type, placement, category, template, priority, isActive, schedule } = req.body;
 
+    const cloudUpload = async (file, folder) => {
+        const result = await cloudinary.uploader.upload(file.path, {
+            folder,
+            transformation: [
+                { width: 1600, crop: "limit" },
+                { quality: "auto" },
+                { fetch_format: "auto" }
+            ]
+        });
+
+        fs.unlink(file.path, () => { }); // non-blocking delete
+
+        return result;
+    };
     // If new image is uploaded
     if (req.file) {
+        const result = await cloudUpload(req.file, "banners");
         Object.assign(banner, {
             title,
             heading,
@@ -121,7 +150,7 @@ const updateBanner = async (req, res) => {
                     endDate: schedule.endDate || null,
                 }
                 : undefined,
-            image: `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+            image: { url: result.secure_url, public_id: result.public_id, fileName: req.file.originalname }
         });
     } else {
         // Update without image

@@ -81,6 +81,8 @@ const productSchema = new mongoose.Schema(
       {
         url: { type: String, required: true },
         isMain: { type: Boolean, default: false },
+        fileName: String,
+        public_id: String,
       },
     ],
 

@@ -1,5 +1,5 @@
 
-
+const stripe = require("../config/stripe.js");
 const payment_intent = async (req, res) => {
     try {
         const { amount } = req.body;
