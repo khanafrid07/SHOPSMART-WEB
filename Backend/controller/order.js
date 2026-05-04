@@ -38,31 +38,62 @@ const createOrder = async (req, res) => {
     try {
         const { items, paymentMethod, shippingAddress, paymentStatus } = req.body;
 
-        items.forEach(async (item) => {
+        let totalPrice = 0;
+
+        // process sequentially (safe for stock)
+        for (const item of items) {
             const product = await Product.findById(item.product);
-            product.soldCount += item.quantity;
-            const variant = product.variants.find(v => v._id.toString() === item.variantId.toString());
+
+            if (!product) {
+                return res.status(404).json({ message: "Product not found" });
+            }
+
+            const variant = product.variants.find(
+                v => v._id.toString() === item.variantId.toString()
+            );
+
+            if (!variant) {
+                return res.status(404).json({ message: "Variant not found" });
+            }
+
             if (variant.stock < item.quantity) {
                 return res.status(400).json({ message: "Stock is not enough" });
             }
-            variant.stock -= item.quantity;
-            await product.save();
-        })
-        const totalPrice = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-        const newOrder = new Order({ items, paymentMethod, totalPrice, shippingAddress, paymentStatus, user: req.userId })
-        await newOrder.save()
-        const user = await User.findById(req.userId)
-        await orderConfirmedMail(user, newOrder)
 
-        res.status(201).json({ msg: "Order creatd successfully", newOrder });
+            variant.stock -= item.quantity;
+            product.soldCount += item.quantity;
+
+            await product.save();
+
+            totalPrice += item.price * item.quantity;
+        }
+
+        const newOrder = await Order.create({
+            items,
+            paymentMethod,
+            totalPrice,
+            shippingAddress,
+            paymentStatus,
+            user: req.userId,
+        });
+
+        const user = await User.findById(req.userId);
+
+
+        orderConfirmedMail(user, newOrder).catch(console.error);
+
+        return res.status(201).json({
+            msg: "Order created successfully",
+            newOrder,
+        });
 
     } catch (err) {
-        (err)
-        res.status(500).json({ message: "Failed to create Order", message: err })
+        return res.status(500).json({
+            message: "Failed to create Order",
+            error: err.message,
+        });
     }
-
-}
-
+};
 
 const orderItemCancel = async (req, res) => {
     try {
