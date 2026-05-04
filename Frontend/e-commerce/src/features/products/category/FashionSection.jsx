@@ -7,14 +7,14 @@ import GenderPanel from "./Fashion/GenderPanel";
 import EmptyState from "../../../components/common/EmptyState";
 import { useNavigate } from "react-router-dom";
 // ── Image Imports ──
-import tshirtsImage from "../../../assets/Fashion/tshirt.jpg";
-import dressesImage from "../../../assets/Fashion/dresses.jpg";
-import jeansImage from "../../../assets/Fashion/jeans.jpg";
-import jacketsImage from "../../../assets/Fashion/jackets.jpg";
-import hoodiesImage from "../../../assets/Fashion/hoodies.jpg";
-import topsImage from "../../../assets/Fashion/tops.jpg";
-import womenJeans from "../../../assets/Fashion/womenJeans.jpg";
-import womenJacket from "../../../assets/Fashion/womenJacket.jpg";
+import tshirtsImage from "../../../assets/Fashion/tshirt.webp";
+import dressesImage from "../../../assets/Fashion/dresses.webp";
+import jeansImage from "../../../assets/Fashion/jeans.webp";
+import jacketsImage from "../../../assets/Fashion/jackets.webp";
+import hoodiesImage from "../../../assets/Fashion/hoodies.webp";
+import topsImage from "../../../assets/Fashion/tops.webp";
+import womenJeans from "../../../assets/Fashion/womenJeans.webp";
+import womenJacket from "../../../assets/Fashion/womenJacket.webp";
 
 
 const CATEGORIES = {

@@ -6,6 +6,7 @@ export default function LeftOverlay({ banner, rounded = true }) {
     >
       {/* Image */}
       <img
+
         src={banner.image.url}
         alt={banner.title || "banner"}
         className="w-full h-full object-cover scale-105"

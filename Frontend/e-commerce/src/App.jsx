@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { fetchUser } from "./features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser, setAuthChecked } from "./features/auth/authSlice";
 import UserLayout from "./layout/UserLayout.jsx";
 import Cart from "./features/cart/Cart.jsx"
 import Checkout from "./Pages/user/Checkout.jsx";
@@ -31,16 +31,32 @@ import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import ScrollToSection from "./features/products/section/ScrollToSection.jsx";
 import ErrorBoundary from "./components/common/ErrorBoundary.jsx";
+import Loader from "./components/common/Loader.jsx";
 const stripePromise = loadStripe("pk_test_51QlWeFQemhG2QfvsGG1PqGASRwoKpb3CV9iBeVeHpYYiDiXApNSn2i9YiHUU3XiLRb7QPXem90utPmVVJ5f0Ewoh00shYEBk3E")
 
 function AppContent() {
   const dispatch = useDispatch();
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
-    if (token) dispatch(fetchUser());
-  }, [token, dispatch]);
+    const token = localStorage.getItem("token");
 
+    const initAuth = async () => {
+      if (!token) {
+        dispatch(setAuthChecked(true));
+        return;
+      }
+
+      try {
+        await dispatch(fetchUser()).unwrap();
+      } finally {
+        dispatch(setAuthChecked(true));
+      }
+    };
+
+    initAuth();
+  }, [dispatch]);
+  const { authChecked, loading } = useSelector((state) => state.auth);
+
+  if (!authChecked || loading) return <Loader />;
   return (
     <Routes>
       {/* User pages wrapped in UserLayout */}
@@ -52,16 +68,18 @@ function AppContent() {
         <Route path="category/:category" element={<CategoryFilter />} />
         <Route path="products" element={<ProductListing />} />
         <Route path="products/:id" element={<ProductDetail />} />
-        <Route path="cart" element={<Cart />} />
-        <Route path="checkout" element={<Checkout />} />
-        <Route path="payment" element={<Elements stripe={stripePromise}>
-          <Payment />
+        <Route element={<ProtectedRoute />}>
+          <Route path="cart" element={<Cart />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="payment" element={<Elements stripe={stripePromise}>
+            <Payment />
 
-        </Elements>} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="wishlist" element={<Wishlist />} />
-        <Route path="orders" element={<UserOrder />} />
-        <Route path="orders/:id" element={<OrderDetails />} />
+          </Elements>} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="wishlist" element={<Wishlist />} />
+          <Route path="orders" element={<UserOrder />} />
+          <Route path="orders/:id" element={<OrderDetails />} />
+        </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Login form="register" />} />
       </Route>

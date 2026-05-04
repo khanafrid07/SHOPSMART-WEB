@@ -73,6 +73,11 @@ export const fetchUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
+
+      if (!token || token == undefined || token == null || token.trim() == '') {
+        return rejectWithValue("No token");
+      }
+
       const res = await axios.get(`${BaseUrl}/fetchUser`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -94,13 +99,13 @@ const authSlice = createSlice({
     error: null,
     currentAddress: JSON.parse(localStorage.getItem("currentAddress")) || null,
     loading: false,
+    authChecked: false
 
   },
-
-
-
-
   reducers: {
+    setAuthChecked: (state, action) => {
+      state.authChecked = action.payload;
+    },
     logout(state) {
       state.user = null;
       state.token = null;
@@ -158,7 +163,7 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(loginWithGoogle.pending, (state, action) => {
-        state.loading = false;
+        state.loading = true;
         state.error = null
       })
       .addCase(loginWithGoogle.fulfilled, (state, action) => {
@@ -176,14 +181,17 @@ const authSlice = createSlice({
       .addCase(fetchUser.pending, (state) => {
         state.loading = true;
         state.error = null;
+
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.loading = false;
+        state.authChecked = true
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.authChecked = true
       })
 
       // ADD ADDRESS
@@ -202,5 +210,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setCurrentAddress } = authSlice.actions;
+export const { logout, setCurrentAddress, setAuthChecked } = authSlice.actions;
 export default authSlice.reducer;

@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ShoppingBag, Sparkles, Zap, ArrowRight } from "lucide-react";
 
-import Accessories from "../../assets/Accessories.png";
-import Beauty from "../../assets/Beauty.png";
-import Fashion from "../../assets/Fashion.png";
-import Footwear from "../../assets/Footwear.png";
+import Accessories from "../../assets/Accessories.webp";
+import Beauty from "../../assets/Beauty.webp";
+import Fashion from "../../assets/Fashion.webp";
+import Footwear from "../../assets/Footwear.webp";
 
 export default function CategorySection() {
   const navigate = useNavigate();

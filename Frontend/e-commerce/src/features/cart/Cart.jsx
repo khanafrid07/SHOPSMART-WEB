@@ -7,17 +7,13 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { notifyError } from "../../utils/notify";
 export default function Cart() {
-    const user = useSelector((state) => state.auth.user)
+    const { user, loading: userLoading } = useSelector((state) => state.auth)
     const navigate = useNavigate()
     const { data: cart, isLoading } = useGetCartQuery(undefined, { skip: !user })
     const [updateCartItem, { isLoading: isUpdating }] = useUpdateCartItemMutation()
     const [removeCartItem, { isLoading: isRemoving }] = useRemoveCartItemMutation()
 
-    useEffect(() => {
-        if (!user) {
-            navigate("/login");
-        }
-    }, [user, navigate]);
+
 
     const handleQuantityIncrease = async (item, variantId, quantity) => {
         try {

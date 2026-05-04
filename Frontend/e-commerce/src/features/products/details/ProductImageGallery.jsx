@@ -16,7 +16,7 @@ export default function ProductImageGallery({ images = [] }) {
         <div>
             <div className="md:grid grid-cols-2 gap-4 px-4 hidden border rounded-sm">
                 {images?.map((img, idx) => (
-                    <img key={idx} className="object-cover w-full h-full" src={img?.url} />
+                    <img loading="lazy" key={idx} className="object-cover w-full h-full" src={img?.url} />
                 ))}
             </div>
             <div className="md:hidden border rounded-lg shadow-lg space-y-4">
@@ -27,7 +27,7 @@ export default function ProductImageGallery({ images = [] }) {
                 <div className="border-t flex justify-evenly p-2">
                     {images?.map((img, idx) => (
                         <div key={idx} onClick={() => setMainImg(img.url)} className={`border rounded p-2 ${mainImg == img.url ? "border-blue-400 rounded-2xl border-4" : "border-green-100"}`}>
-                            <img className="h-20 w-20 object-cover" src={img.url} />
+                            <img loading="lazy" className="h-20 w-20 object-cover" src={img.url} />
                         </div>
 
 
