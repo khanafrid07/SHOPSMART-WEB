@@ -83,7 +83,7 @@ export default function FeaturedProduct({ gender, category }) {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.3 }}
+                  transition={{ delay: index * 0.1 }}
                   key={product._id}
                   className="max-w-[190px] sm:min-w-[240px] md:min-w-[260px] flex-shrink-0 snap-start transition-transform duration-300 hover:scale-[1.04]"
                 >

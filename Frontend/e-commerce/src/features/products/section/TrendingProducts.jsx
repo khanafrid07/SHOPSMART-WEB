@@ -12,7 +12,7 @@ export default function TrendingProducts({ category, gender }) {
   const navigate = useNavigate()
 
   const [limit, setLimit] = useState(
-    window.innerWidth < 768 ? 4 : 8
+    window.innerWidth < 768 ? 6 : 8
   );
   const { isLoading, isError, data, refetch } = useGetProductsQuery({
     sort: "trending",

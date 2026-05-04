@@ -9,7 +9,7 @@ import ProductCardSkeleton from "../../../components/skeletons/productCardSkelet
 export default function NewArrivals({ category, gender }) {
   const navigate = useNavigate();
   const [limit, setLimit] = useState(
-    window.innerWidth < 768 ? 4 : 8
+    window.innerWidth < 768 ? 6 : 8
   );
 
 

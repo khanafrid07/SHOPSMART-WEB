@@ -14,7 +14,7 @@ export default function BeautySection() {
       <div className="w-full sm:pl-4 overflow-hidden">
         <BannerSlot banners={data} placement={"home_top"} />
       </div>
-      <div className="p-2 mt-6 sm:p-8">
+      <div className="p-2 mt-6 px-4 sm:p-8">
 
         <TrendingProducts category={"Beauty"} />
       </div>
@@ -25,7 +25,7 @@ export default function BeautySection() {
       <div>
         <Category />
       </div>
-      <div>
+      <div className="px-4">
         {/* <ShopConcern /> */}
         <NewArrivals category={"Beauty"} />
       </div>
