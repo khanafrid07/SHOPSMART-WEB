@@ -79,8 +79,12 @@ const createOrder = async (req, res) => {
 
         const user = await User.findById(req.userId);
 
-
-        await orderConfirmedMail(user, newOrder)
+        // Fire-and-forget: email must not block or fail the order response
+        if (user) {
+            orderConfirmedMail(user, newOrder).catch((err) =>
+                console.error("Order confirmation email failed:", err.message)
+            );
+        }
 
         return res.status(201).json({
             msg: "Order created successfully",
