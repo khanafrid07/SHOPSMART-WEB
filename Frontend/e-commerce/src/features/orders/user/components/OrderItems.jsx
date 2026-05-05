@@ -25,12 +25,12 @@ export default function OrderItems({ order }) {
                 >
                     <img
                         src={item.image}
-                        alt={item.name}
+                        alt={item.title}
                         className="w-20 h-20 object-cover rounded-lg"
                     />
 
                     <div className="flex-1">
-                        <p className="font-semibold text-gray-800">{item.name}</p>
+                        <p className="font-semibold text-gray-800">{item.title}</p>
                         <p className="text-sm text-gray-500">{item.variantLabel}</p>
                         <p className="text-sm">Qty: {item.quantity}</p>
                     </div>

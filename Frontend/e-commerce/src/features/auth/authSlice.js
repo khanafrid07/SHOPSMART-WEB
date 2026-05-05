@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 const BaseUrl = import.meta.env.VITE_API_URL + "/api/auth"
-const localUrl = "http://localhost:8080"
 
 export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${localUrl}/api/auth/send-otp`, data);
+    const res = await axios.post(`${BaseUrl}/send-otp`, data);
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to send OTP")
@@ -13,7 +12,7 @@ export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWit
 })
 export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${localUrl}/api/auth/verify-otp`, data);
+    const res = await axios.post(`${BaseUrl}/verify-otp`, data);
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to verify OTP")
@@ -24,7 +23,7 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${localUrl}/api/auth/login`, data);
+      const res = await axios.post(`${BaseUrl}/login`, data);
       return res.data;
     } catch (err) {
       ("ERROR:", err.response?.data);
