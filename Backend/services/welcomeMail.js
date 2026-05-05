@@ -1,5 +1,5 @@
 
-const { sendMail } = require("./resend.js")
+const { sendMail } = require("./sendGrid.js")
 
 
 

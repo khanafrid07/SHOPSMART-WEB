@@ -1,4 +1,4 @@
-const { sendMail } = require("./resend.js")
+const { sendMail } = require("./sendGrid.js")
 
 const orderConfirmedMail = async (user, order) => {
     await sendMail({
