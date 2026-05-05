@@ -1,10 +1,26 @@
-import { Resend } from 'resend';
+const { Resend } = require("resend");
 
-const resend = new Resend('re_TB3aYtLZ_GmhjpxsCcpwnHnwfMBBmxP6J');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-resend.emails.send({
-    from: 'onboarding@resend.dev',
-    to: 'k0786khan786@gmail.com',
-    subject: 'Hello World',
-    html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
-});
+const sendMail = async (options) => {
+    console.log("Attempting to send email via Resend to:", options.to);
+    try {
+        const { data, error } = await resend.emails.send({
+            from: process.env.EMAIL_USER,
+            to: options.to,
+            subject: options.subject,
+            html: options.html,
+        });
+
+        if (error) {
+            console.error("Resend Error:", error);
+            return;
+        }
+
+        console.log("Email sent successfully. ID:", data?.id);
+    } catch (err) {
+        console.error("Resend Exception:", err.message);
+    }
+};
+
+module.exports = { sendMail };
