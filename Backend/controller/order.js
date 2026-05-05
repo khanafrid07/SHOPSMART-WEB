@@ -80,7 +80,7 @@ const createOrder = async (req, res) => {
         const user = await User.findById(req.userId);
 
 
-        orderConfirmedMail(user, newOrder).catch(console.error);
+        await orderConfirmedMail(user, newOrder)
 
         return res.status(201).json({
             msg: "Order created successfully",

@@ -70,7 +70,7 @@ const verifyOtp = async (req, res) => {
             return res.status(400).json({ message: "OTP expired" });
         }
 
-        if (temp.otp !== otp) {
+        if (String(temp.otp) !== String(otp)) {
             return res.status(401).json({ message: "Invalid OTP" });
         }
 
@@ -79,12 +79,19 @@ const verifyOtp = async (req, res) => {
             email: temp.email,
             password: temp.password,
         });
+        const token = jwt.sign(
+            { id: newUser._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
 
         await TempUser.deleteOne({ email });
         await sendWelcomeMail(newUser)
         res.status(200).json({
             message: "Account created successfully",
             user: newUser,
+            token,
         });
 
 
