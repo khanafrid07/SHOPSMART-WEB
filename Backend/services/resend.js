@@ -6,7 +6,7 @@ const sendMail = async (options) => {
     console.log("Attempting to send email via Resend to:", options.to);
     try {
         const { data, error } = await resend.emails.send({
-            from: process.env.EMAIL_USER,
+            from: "onboarding@resend.dev",
             to: options.to,
             subject: options.subject,
             html: options.html,
