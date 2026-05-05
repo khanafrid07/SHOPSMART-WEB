@@ -15,7 +15,7 @@ export default function Home() {
         if (!user) {
             const timer = setTimeout(() => {
                 setPopup(true)
-            }, 4000)
+            }, 6000)
             return () => clearTimeout(timer);
         }
     }, [user])

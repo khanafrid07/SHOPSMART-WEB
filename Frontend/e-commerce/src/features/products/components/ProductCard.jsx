@@ -80,7 +80,7 @@ export default function ProductCard({
           {hasDiscount ? (
             <>
               <span className="text-xs sm:text-sm font-bold text-purple-600">
-                Rs. {product?.basePrice}
+                Rs. {Math.round(product?.basePrice)}
               </span>
               <span className="text-[10px] sm:text-xs line-through text-gray-400">
                 Rs. {priceWithoutDiscount}

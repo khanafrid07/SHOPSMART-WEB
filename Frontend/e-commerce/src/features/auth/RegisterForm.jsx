@@ -15,15 +15,18 @@ export default function RegisterForm({
   setSwitchForm,
   name,
   setName,
+  step,
+  setStep,
+  otpLoading
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate()
-  const { loading } = useSelector((state) => state.auth);
+
 
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("form"); // "form" | "otp"
+  // "form" | "otp"
 
-  // 🔥 ONE SUBMIT HANDLER
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -51,8 +54,8 @@ export default function RegisterForm({
         navigate("/")
       }
     } catch (err) {
-      (err);
-      notifyError(err)
+      console.error("SEND OTP ERROR:", err);
+      notifyError(err?.message || err);
     }
   };
 
@@ -128,7 +131,7 @@ export default function RegisterForm({
           type="submit"
           className="btn btn-primary w-full rounded-xl"
         >
-          {loading
+          {otpLoading
             ? "Processing..."
             : step === "form"
               ? "Send OTP"

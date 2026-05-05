@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { fa } from "zod/v4/locales";
-
 const BaseUrl = import.meta.env.VITE_API_URL + "/api/auth"
+const localUrl = "http://localhost:8080"
 
 export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/send-otp`, data);
+    const res = await axios.post(`${localUrl}/api/auth/send-otp`, data);
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to send OTP")
@@ -14,19 +13,18 @@ export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWit
 })
 export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/verify-otp`, data);
+    const res = await axios.post(`${localUrl}/api/auth/verify-otp`, data);
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to verify OTP")
   }
 })
 
-
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${BaseUrl}/login`, data);
+      const res = await axios.post(`${localUrl}/api/auth/login`, data);
       return res.data;
     } catch (err) {
       ("ERROR:", err.response?.data);
@@ -99,7 +97,10 @@ const authSlice = createSlice({
     error: null,
     currentAddress: JSON.parse(localStorage.getItem("currentAddress")) || null,
     loading: false,
-    authChecked: false
+    authChecked: false,
+    otpLoading: false,
+
+
 
   },
   reducers: {
@@ -121,30 +122,34 @@ const authSlice = createSlice({
       .addCase(sendOtp.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.otpLoading = true;
       })
       .addCase(sendOtp.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        localStorage.setItem("token", action.payload.token);
+        state.otpLoading = false;
+
       })
       .addCase(sendOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.otpLoading = false;
       })
       .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.otpLoading = true;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
         localStorage.setItem("token", action.payload.token);
+        state.otpLoading = false;
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.otpLoading = false;
       })
 
       // LOGIN

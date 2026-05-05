@@ -58,7 +58,7 @@ export default function ProductDetail() {
                         <ProductInfo info={selectedVariant} product={product} />
 
                         <ProductVariants images={product?.images} info={product} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} allVariant={product?.variants} />
-                        <CartAndPrice onAdding={handleAddToCart} stock={selectedVariant?.stock} />
+                        <CartAndPrice loading={isAdding} onAdding={handleAddToCart} stock={selectedVariant?.stock} />
                         <Reviews refetch={refetch} reviews={product?.reviews || []} />
                     </>}
 

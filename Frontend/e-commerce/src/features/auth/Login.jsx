@@ -7,13 +7,18 @@ import { notifyError, notifySuccess } from "../../utils/notify";
 import { useNavigate } from "react-router-dom";
 import { ShoppingBag } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
-export default function Login({ form = "login" }) {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [switchForm, setSwitchForm] = useState(form);
+  const [switchForm, setSwitchForm] = useState(() => {
+    return window.location.pathname.includes("register")
+      ? "register"
+      : "login";
+  });
   const [name, setName] = useState("");
+  const [step, setStep] = useState("form");
 
-  const { user, error, loading } = useSelector((state) => state.auth);
+  const { user, error, otpLoading, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -95,6 +100,7 @@ export default function Login({ form = "login" }) {
 
           {switchForm === "login" ? (
             <LoginForm
+              key={"login"}
               email={email}
               setEmail={setEmail}
               password={password}
@@ -107,17 +113,21 @@ export default function Login({ form = "login" }) {
             />
           ) : (
             <RegisterForm
+              key={"register"}
               email={email}
               setEmail={setEmail}
               password={password}
               setPassword={setPassword}
               handleSubmit={handleSubmit}
-              loading={loading}
+              otpLoading={otpLoading}
+
               error={error}
               switchForm={switchForm}
               setSwitchForm={setSwitchForm}
               name={name}
               setName={setName}
+              step={step}
+              setStep={setStep}
             />
           )}
         </div>

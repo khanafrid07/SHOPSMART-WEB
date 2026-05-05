@@ -166,7 +166,9 @@ export default function FootwearSection() {
             {renderCards(footwear.men, "men")}
           </div>
         </section>
-        <NewArrivals category={"footwear"} />
+        <div className="px-4">
+          <NewArrivals category={"footwear"} />
+        </div>
 
 
         {/* ── WOMEN'S COLLECTION ── */}

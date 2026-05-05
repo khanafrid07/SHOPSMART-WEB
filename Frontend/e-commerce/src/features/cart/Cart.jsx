@@ -41,13 +41,13 @@ export default function Cart() {
         }
     }
     if (isLoading) {
-        return <p>Loading Cart</p>
+        return <p className="text-center">Loading Cart</p>
     }
 
 
     return (
         <div className="min-h-screen bg-gray-100 p-4 md:p-8">
-            <h1 className="text-2xl font-bold mb-6">🛒 Your Cart</h1>
+            <h1 className="text-2xl font-bold mb-6 mt-8">🛒 Your Cart</h1>
 
             <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-4">
