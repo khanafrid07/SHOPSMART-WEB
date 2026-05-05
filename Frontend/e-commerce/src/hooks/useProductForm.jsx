@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "../components/shared/ProductSchema";
 export default function useProductForm() {
 
