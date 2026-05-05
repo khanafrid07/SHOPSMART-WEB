@@ -47,6 +47,10 @@ app.get("/", (req, res) => {
     res.send("Server is running");
 });
 
+app.get("/health", (req, res) => {
+    res.status(200).json({ message: "Server is running" })
+})
+
 // API Routes
 app.use("/api/payment", paymentRoute);
 app.use("/api/auth", authRoute);
