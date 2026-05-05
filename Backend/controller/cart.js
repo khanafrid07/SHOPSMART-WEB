@@ -7,7 +7,7 @@ const Product = require("../models/product");
 const getCart = async (req, res) => {
     try {
         const count = req.query.count
-        console.log(req.query, "query")
+
 
         if (count) {
             const cart = await Cart.findOne({ user: req.userId });
