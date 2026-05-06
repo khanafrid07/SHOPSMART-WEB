@@ -1,7 +1,7 @@
 import { Heart } from "lucide-react";
 import Loader from "../../components/common/Loader";
 import { notifyError, notifySuccess } from "../../utils/notify";
-import WishlistProductCard from "./components/wishlistProductCard";
+import WishlistProductCard from "./components/WishlistProductCard";
 import { useGetWishlistQuery, useRemoveFromWishlistMutation } from "./wishlistSlice";
 import { useAddToCartMutation } from "../cart/cart";
 import EmptyState from "../../components/common/EmptyState";
