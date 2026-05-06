@@ -30,29 +30,8 @@ export default function ProductVariants({ images, info, selectedVariant, setSele
             return updated;
         });
     }, [attributesKey]);
-
-    useEffect(() => {
-        if (selectedVariant?.attributes) {
-            setManualVariantSelection((prev) => {
-                const prevKeys = Object.keys(prev);
-                const nextKeys = Object.keys(selectedVariant.attributes);
-                if (prevKeys.length !== nextKeys.length) return selectedVariant.attributes;
-
-                const isSame = prevKeys.every(k => prev[k] === selectedVariant.attributes[k]);
-                return isSame ? prev : selectedVariant.attributes;
-            });
-        }
-    }, [selectedVariant]);
-
     const matchVariant = useMemo(() => {
-        if (Object.keys(manualVariantSelection).length === 0) return null;
-
         return allVariant?.find((variant) => {
-            const variantKeys = Object.keys(variant.attributes || {});
-            const selectionKeys = Object.keys(manualVariantSelection);
-
-            if (variantKeys.length !== selectionKeys.length) return false;
-
             return Object.entries(manualVariantSelection).every(([key, value]) => {
                 return variant.attributes?.[key] === value;
             });

@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const wishlistApi = createApi({
     reducerPath: "wishlistApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${import.meta.env.VITE_API_BASE_URL}/api/wishlist`, prepareHeaders: (headers) => {
+        baseUrl: `${import.meta.env.VITE_API_URL}/api/wishlist` || "http://localhost:8080/api/wishlist", prepareHeaders: (headers) => {
             const token = localStorage.getItem("token");
             if (token) {
                 headers.set("Authorization", `Bearer ${token}`)

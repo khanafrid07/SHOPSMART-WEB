@@ -19,6 +19,7 @@ export default function ProductDetail() {
     const [addToWishlist, { isError: isWishlistError, error: wishlistError, isLoading: isWishlistAdding }] = useAddToWishlistMutation()
     const { product } = data || {}
     const [selectedVariant, setSelectedVariant] = useState(null)
+    const [blockVar, setBlockVar] = useState(false)
     const user = useSelector((state) => state.auth.user)
     useEffect(() => {
         if (product) {
@@ -72,6 +73,7 @@ export default function ProductDetail() {
         }
     }
 
+
     return (
         <div>
             {isLoading && <ProductDetailSkeleton />}
@@ -82,8 +84,8 @@ export default function ProductDetail() {
                     {!isLoading && <>
                         <ProductInfo info={selectedVariant} product={product} />
 
-                        <ProductVariants images={product?.images} info={product} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} allVariant={product?.variants} />
-                        <CartAndPrice isWishlistAdding={isWishlistAdding} handleAddToWishlist={handleAddToWishlist} loading={isAdding} onAdding={handleAddToCart} stock={selectedVariant?.stock} />
+                        <ProductVariants setBlockVar={setBlockVar} images={product?.images} info={product} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} allVariant={product?.variants} />
+                        <CartAndPrice blockVar={blockVar} isWishlistAdding={isWishlistAdding} handleAddToWishlist={handleAddToWishlist} loading={isAdding} onAdding={handleAddToCart} stock={selectedVariant?.stock} />
                         <Reviews refetch={refetch} reviews={product?.reviews || []} />
                     </>}
 
