@@ -90,7 +90,9 @@ const getProducts = async (req, res) => {
         if (sort === "featured") {
             filter.isFeatured = true;
             filter.isActive = true;
-            filter.stock = { $gt: 0 };
+            delete filter.discount;
+
+
         }
         if (discount) {
             filter.discount = { $gt: Number(discount) };

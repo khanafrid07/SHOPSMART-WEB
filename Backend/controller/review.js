@@ -5,10 +5,9 @@ const User = require("../models/user.js")
 const createReview = async (req, res) => {
     try {
         let { rating, comment, productId } = req.body
-            (req.body, "review")
+        console.log(req.body, "review")
         const reviewedUser = await User.findById(req.userId)
         productId = productId.split("-").pop()
-            (productId, "id")
         let reviewProduct = await Product.findById(productId)
         let review = new Review({ username: reviewedUser.name, rating, comment })
         reviewProduct.reviews.push(review._id)
