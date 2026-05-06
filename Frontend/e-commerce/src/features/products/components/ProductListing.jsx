@@ -55,7 +55,7 @@ export default function ProductListing() {
 
 
   const { data, isLoading } = useGetProductsQuery(Object.fromEntries(searchParams));
-  (data, "data comds")
+
 
   if (isLoading) return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -90,7 +90,7 @@ export default function ProductListing() {
             )}
           </button>
 
-          {searchParams.get("search") && <p className="flex self-center mb-4 italic text-sm opacity-50">Search results for <span className="font-semibold ml-1">"{searchParams.get("search")}"</span> - {products.length} found.</p>}
+          {searchParams.get("search") && <p className="flex self-center mb-4 italic text-sm opacity-50">Search results for "{searchParams.get("search")}" {products.length} found.</p>}
         </div>
 
         {searchParams.get("search") && products.length === 0 ? (

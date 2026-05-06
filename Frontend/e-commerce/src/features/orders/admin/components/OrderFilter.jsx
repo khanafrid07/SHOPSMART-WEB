@@ -16,6 +16,7 @@ export default function OrderFilter({ onSearch, onStatusChange }) {
     };
 
     const OrderStatus = [
+        { label: "All", value: "", className: "" },
         { label: "Pending", value: "Pending", className: "text-warning" },
         { label: "Delivered", value: 'Delivered', className: "text-success" },
         { label: "Cancelled", value: "Cancelled", className: "text-red-500" }

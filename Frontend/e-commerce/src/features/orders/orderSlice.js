@@ -16,8 +16,12 @@ export const orderApi = createApi({
     }),
     tagTypes: ["orders"],
     endpoints: (builder) => ({
-        getOrders: builder.query({
+        getMyOrders: builder.query({
             query: () => "/orders",
+            providesTags: ["orders"]
+        }),
+        adminGetOrders: builder.query({
+            query: () => "/orders/admin",
             providesTags: ["orders"]
         }),
         orderById: builder.query({
@@ -75,4 +79,4 @@ export const orderApi = createApi({
 
 })
 
-export const { useGetOrderStatsQuery, useCreateOrderMutation, useDeleteOrderMutation, useGetOrdersQuery, useOrderByIdQuery, useUpdateOrderMutation, useCancelOrderMutation, useCancelOrderItemMutation } = orderApi
+export const { useGetOrderStatsQuery, useCreateOrderMutation, useDeleteOrderMutation, useOrderByIdQuery, useUpdateOrderMutation, useCancelOrderMutation, useCancelOrderItemMutation, useAdminGetOrdersQuery, useGetMyOrdersQuery } = orderApi

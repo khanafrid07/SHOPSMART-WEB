@@ -1,11 +1,12 @@
 import { useMemo } from "react";
-import { useGetOrdersQuery } from "../../orderSlice";
+import { useAdminGetOrdersQuery } from "../../orderSlice";
 import ProductStats from "../../../Dashboard/shared/ProductsStats";
 import { Box, PackageOpen, Truck, Vault } from "lucide-react";
 
 export default function OrderData() {
 
-    const { data: orders = [], isLoading, isError } = useGetOrdersQuery();
+    const { data: orders = [], isLoading, isError } = useAdminGetOrdersQuery();
+    console.log(orders, "orders data")
 
 
     const orderStatus = useMemo(() => {

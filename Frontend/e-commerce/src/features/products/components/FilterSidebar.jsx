@@ -1,4 +1,4 @@
-import { X, SlidersHorizontal } from "lucide-react";
+import { X, SlidersHorizontal, RotateCcw } from "lucide-react";
 import FilterSection from "./FilterSection";
 import FilterItem from "./FilterItem";
 import DiscountItem from "./DiscountItem";
@@ -23,40 +23,51 @@ export default function FilterSidebar({ filters, onChange, open, onClose }) {
 
   return (
     <>
+      {/* Mobile Backdrop */}
       {open && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden" onClick={onClose} />
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden transition-opacity"
+          onClick={onClose}
+        />
       )}
 
       <aside className={`
-        fixed md:static top-0 left-0 z-50 h-full 
-        w-64 md:w-[220px] bg-white border-r border-gray-100
-        flex flex-col transition-transform duration-300
-        ${open ? "translate-x-0 shadow-2xl" : "-translate-x-full md:translate-x-0"}
+        fixed md:sticky top-0 md:top-[72px] left-0 z-50  mt-20 md:mt-0
+        h-full md:h-[calc(100vh-72px)] self-start
+        w-[280px] md:w-[250px] lg:w-[260px] bg-white 
+        border-r border-gray-100 flex flex-col 
+        transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+        ${open ? "translate-x-0 shadow-2xl md:shadow-none" : "-translate-x-full md:translate-x-0"}
       `}>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 ">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={14} className="text-gray-400" />
-            <span className="font-syne text-[15px] font-bold text-gray-900">Filter</span>
+        <div className="flex items-center justify-between py-5 px-6 border-b border-gray-100/80 bg-white/50 backdrop-blur-md sticky top-0 z-10">
+          <div className="flex items-center gap-2.5">
+            <SlidersHorizontal size={16} className="text-gray-900" />
+            <span className="font-syne text-[15px] font-bold text-gray-900 tracking-wide uppercase">Filters</span>
           </div>
           <div className="flex items-center gap-3">
             {hasActive && (
               <button
                 onClick={() => ["category", "gender", "type", "price", "discount", "search"].forEach(k => onChange(k, ""))}
-                className="text-[10px] text-gray-300 hover:text-red-400 transition-colors"
+                className="group flex items-center gap-1.5 text-[11px] font-medium text-gray-500 hover:text-red-500 transition-colors uppercase tracking-wider"
+                title="Clear all filters"
               >
-                Clear all
+                <RotateCcw size={12} className="group-hover:-rotate-180 transition-transform duration-500" />
+                Clear
               </button>
             )}
-            <button onClick={onClose} className="md:hidden text-gray-300 hover:text-gray-600 transition-colors">
-              <X size={15} />
+            <button
+              onClick={onClose}
+              className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              <X size={16} />
             </button>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex-1 overflow-y-auto px-4">
+        {/* Filters Scrollable Area */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-300">
 
           <FilterSection title="Category">
             {CATEGORIES.map(c => (
@@ -88,13 +99,13 @@ export default function FilterSidebar({ filters, onChange, open, onClose }) {
             </FilterSection>
           )}
 
-          <FilterSection title="Price">
+          <FilterSection title="Sort by Price">
             <FilterItem label="Low → High" active={sort === "priceLow"} onClick={() => toggle("price", "low")} />
             <FilterItem label="High → Low" active={sort === "priceHigh"} onClick={() => toggle("price", "high")} />
           </FilterSection>
 
           <FilterSection title="Discount" defaultOpen={false}>
-            <div className="grid grid-cols-2 gap-1.5 pt-1">
+            <div className="grid grid-cols-2 gap-2 pt-2 pb-4">
               {DISCOUNTS.map(d => (
                 <DiscountItem key={d} label={`${d}%+`} active={discount === d} onClick={() => toggle("discount", d)} />
               ))}

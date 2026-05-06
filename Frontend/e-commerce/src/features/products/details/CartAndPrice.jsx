@@ -1,6 +1,6 @@
 import { Heart, ShoppingBag } from "lucide-react";
 
-export default function CartAndPrice({ loading, onAdding, stock }) {
+export default function CartAndPrice({ handleAddToWishlist, loading, onAdding, stock, isWishlistAdding }) {
     return (
         <div className="m-4 grid gap-4 sm:grid-cols-2">
 
@@ -14,13 +14,13 @@ export default function CartAndPrice({ loading, onAdding, stock }) {
             </button>
 
 
-            <button
+            <button onClick={handleAddToWishlist} disabled={isWishlistAdding}
                 className="flex items-center justify-center gap-2 
         bg-red-500 text-white font-semibold py-3 rounded-xl 
         hover:bg-red-600 active:scale-95 transition-all duration-200 shadow-md"
             >
                 <Heart size={20} />
-                Wishlist
+                {isWishlistAdding ? "Adding..." : "Wishlist"}
             </button>
 
         </div>

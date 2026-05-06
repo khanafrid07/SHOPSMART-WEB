@@ -6,6 +6,7 @@ import { cartApi } from '../features/cart/cart.js';
 import { reviewApi } from '../features/products/reviews/reviewSlice.js';
 import { bannerApi } from "../features/Banners/BannerSlice.js"
 import { dashboardApi } from '../features/Dashboard/dashboardSlice.js';
+import { wishlistApi } from '../features/wishlist/wishlistSlice.js';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     [reviewApi.reducerPath]: reviewApi.reducer,
     [bannerApi.reducerPath]: bannerApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
+    [wishlistApi.reducerPath]: wishlistApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) => (
@@ -26,6 +28,7 @@ export const store = configureStore({
       .concat(reviewApi.middleware)
       .concat(bannerApi.middleware)
       .concat(dashboardApi.middleware)
+      .concat(wishlistApi.middleware)
 
   ),
 });

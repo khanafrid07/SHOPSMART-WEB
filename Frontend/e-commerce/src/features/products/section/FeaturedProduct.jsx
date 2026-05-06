@@ -10,6 +10,7 @@ export default function FeaturedProduct({ gender, category }) {
     limit: 8,
     gender,
     category,
+
   });
 
   const scrollRef = useRef();

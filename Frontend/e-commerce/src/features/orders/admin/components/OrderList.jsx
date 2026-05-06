@@ -25,7 +25,7 @@ export default function OrderList({ data = [] }) {
                         <p className="text-gray-500 font-mono truncate">{order._id}</p>
                         <p className="text-gray-700">{order.user?.name || "Unknown"}</p>
                         <p className="text-gray-800 font-medium">
-                            ${order.totalPrice?.toLocaleString() || 0}
+                            Rs. {order.totalPrice?.toLocaleString() || 0}
                         </p>
                         <p className="text-gray-600">{order.paymentMethod || "N/A"}</p>
 

@@ -2,12 +2,13 @@ import { useMemo, useState } from "react"
 import OrderData from "../../features/orders/admin/components/OrderData"
 import OrderFilter from "../../features/orders/admin/components/OrderFilter"
 import OrderList from "../../features/orders/admin/components/OrderList"
-import { useGetOrdersQuery } from "../../features/orders/orderSlice"
+import { useAdminGetOrdersQuery } from "../../features/orders/orderSlice"
 
 export default function AdminOrder() {
 
-  const { data = [], isLoading, isError } = useGetOrdersQuery()
+  const { data = [], isLoading, isError } = useAdminGetOrdersQuery()
   const [filterStatus, setFilterStatus] = useState("All")
+
 
   const filteredData = useMemo(() => {
 

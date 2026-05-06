@@ -58,7 +58,7 @@ export default function Navbar({ wishCount = 0 }) {
         const d = await r.json();
         setSuggestions(d.allProducts || []);
       } catch { }
-    }, 1000);
+    }, 500);
     return () => clearTimeout(t);
   }, [searchQuery]);
 

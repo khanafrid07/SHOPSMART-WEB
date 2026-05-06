@@ -10,7 +10,7 @@ export default function DashboardHome() {
     {
       name: "Total Revenue",
       icon: HandCoins,
-      number: `$${revenue30days}`,
+      number: `Rs. ${revenue30days}`,
       change: "+12.5%",
       bgGradient: "from-blue-500/10 to-blue-600/10",
       iconBg: "bg-blue-100",
@@ -142,13 +142,13 @@ export default function DashboardHome() {
                       className="hover:bg-gray-50 transition-colors duration-200"
                     >
                       <td className="px-4 sm:px-6 py-4 text-sm font-semibold text-gray-900">
-                        {order._id}
+                        {order._id.slice(0, 8)}...
                       </td>
                       <td className="px-4 sm:px-6 py-4 text-sm text-gray-600">
                         {order?.user?.name}
                       </td>
                       <td className="px-4 sm:px-6 py-4 text-sm font-semibold text-gray-900">
-                        {order.totalPrice}
+                        Rs. {order.totalPrice}
                       </td>
                       <td className="px-4 sm:px-6 py-4">
                         <span
@@ -192,7 +192,7 @@ export default function DashboardHome() {
                     {product?.soldCount} sales
                   </span>
                   <span className="text-sm font-bold text-gray-900">
-                    {product.basePrice ? product.basePrice * product.soldCount : 0}
+                    Rs. {product.basePrice ? product.basePrice * product.soldCount : 0}
                   </span>
                 </div>
                 <div className="mt-2 h-1.5 bg-gray-200 rounded-full overflow-hidden">
@@ -216,10 +216,10 @@ export default function DashboardHome() {
       {/* Quick Actions */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "New Product", link: "/dashboard/add", color: "from-blue-500 to-blue-600" },
-          { label: "View Reports", color: "from-green-500 to-green-600" },
-          { label: "Manage Products", link: "/dashboard/manage", color: "from-purple-500 to-purple-600" },
-          { label: "Customer Support", color: "from-orange-500 to-orange-600" },
+          { label: "New Product", link: "/dashboard/add-product", color: "from-blue-500 to-blue-600" },
+
+          { label: "Manage Products", link: "/dashboard/manage-products", color: "from-purple-500 to-purple-600" },
+
         ].map((action, idx) => (
           <button
             onClick={() => navigate(action.link)}

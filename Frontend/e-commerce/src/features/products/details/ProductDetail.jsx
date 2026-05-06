@@ -11,11 +11,12 @@ import SuggestedProduct from "../section/SuggestedProduct"
 import Reviews from "../reviews/Reviews"
 import { useSelector } from "react-redux"
 import ProductDetailSkeleton from "../../../components/skeletons/ProductDetailSkeleton"
-
+import { useAddToWishlistMutation } from "../../wishlist/wishlistSlice"
 export default function ProductDetail() {
     const { id } = useParams()
     const { data, isLoading, refetch } = useViewProductQuery(id)
     const [addToCart, { isError, error, isLoading: isAdding }] = useAddToCartMutation()
+    const [addToWishlist, { isError: isWishlistError, error: wishlistError, isLoading: isWishlistAdding }] = useAddToWishlistMutation()
     const { product } = data || {}
     const [selectedVariant, setSelectedVariant] = useState(null)
     const user = useSelector((state) => state.auth.user)
@@ -46,6 +47,20 @@ export default function ProductDetail() {
 
         }
     }
+    const handleAddToWishlist = async () => {
+        if (!user) return notifyError("Please login to add item to wishlist");
+        try {
+            await addToWishlist({
+                productId: product._id,
+                variantId: selectedVariant?._id,
+            }).unwrap()
+            notifySuccess("Item added to wishlist")
+            refetch
+        } catch (error) {
+            notifyError(error?.data?.message || "Failed to add item to wishlist")
+
+        }
+    }
 
     return (
         <div>
@@ -58,7 +73,7 @@ export default function ProductDetail() {
                         <ProductInfo info={selectedVariant} product={product} />
 
                         <ProductVariants images={product?.images} info={product} selectedVariant={selectedVariant} setSelectedVariant={setSelectedVariant} allVariant={product?.variants} />
-                        <CartAndPrice loading={isAdding} onAdding={handleAddToCart} stock={selectedVariant?.stock} />
+                        <CartAndPrice isWishlistAdding={isWishlistAdding} handleAddToWishlist={handleAddToWishlist} loading={isAdding} onAdding={handleAddToCart} stock={selectedVariant?.stock} />
                         <Reviews refetch={refetch} reviews={product?.reviews || []} />
                     </>}
 

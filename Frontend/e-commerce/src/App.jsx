@@ -10,7 +10,7 @@ import Payment from "./Pages/user/Payment.jsx";
 import UserOrder from "./Pages/user/UserOrder.jsx";
 import OrderDetails from "./features/orders/user/components/OrderDetails.jsx";
 import Login from "./features/auth/Login";
-import Wishlist from "./Pages/user/Wishlist.jsx";
+import Wishlist from "./features/wishlist/wishlist.jsx";
 import Home from "./Pages/public/Home.jsx";
 import CategoryFilter from "./features/products/category/CateogryFilter.jsx";
 import ProductDetail from "./features/products/details/ProductDetail.jsx";
@@ -112,9 +112,9 @@ function AppContent() {
           <Route index element={<DashboardHome />} />
           <Route path="manage-products" element={<ManageProducts />} />
           <Route path="add-product" element={<ProductForm />} />
-          <Route path="update-product/:id" element={<ProductForm isEdit />} />
+          <Route path="update-product/:id" element={<ProductForm isEdit={true} />} />
           <Route path="orders" element={<AdminOrder />} />
-          <Route path="orders/:id" element={<OrderDetails isAdmin />} />
+          <Route path="orders/:id" element={<OrderDetails isAdmin={true} />} />
           <Route path="banners" element={<BannerManagement />} />
           <Route path="banners/create" element={<BannerForm />} />
           <Route path="banners/:id/edit" element={<BannerForm />} />

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useGetOrdersQuery } from "../../features/orders/orderSlice";
+import { useGetMyOrdersQuery } from "../../features/orders/orderSlice";
 import { Package, MapPin, CreditCard } from "lucide-react";
 
 const TABS = ["all", "pending", "shipped", "delivered", "cancelled"];
 
 export default function UserOrder() {
-  const { data: orders, isLoading, isError } = useGetOrdersQuery();
+  const { data: orders, isLoading, isError } = useGetMyOrdersQuery();
   const [activeTab, setActiveTab] = useState("all");
 
   if (isLoading) {

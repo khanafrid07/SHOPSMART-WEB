@@ -5,7 +5,7 @@ import OrderStatusBadge from "./OrderStatusBadge";
 import OrderTimeline from "./OrderTimeline";
 import StatusController from "../../admin/components/StatusController";
 
-import { useGetOrdersQuery, useOrderByIdQuery } from "../../orderSlice";
+import { useOrderByIdQuery } from "../../orderSlice";
 import { useParams } from "react-router-dom";
 
 export default function OrderDetails({ isAdmin }) {
