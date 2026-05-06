@@ -8,7 +8,7 @@ import Checkout from "./Pages/user/Checkout.jsx";
 import Payment from "./Pages/user/Payment.jsx";
 import UserOrder from "./Pages/user/UserOrder.jsx";
 import OrderDetails from "./features/orders/user/components/OrderDetails.jsx";
-import WishList from "./features/wishlist/Wishhlist.jsx";
+import Wishlist from "./features/wishlist/Wishlist.jsx";
 import Login from "./features/auth/Login";
 import Home from "./Pages/public/Home.jsx";
 import CategoryFilter from "./features/products/category/CateogryFilter.jsx";
@@ -88,7 +88,7 @@ function AppContent() {
             }
           />
           <Route path="profile" element={<Profile />} />
-          <Route path="wishlist" element={<WishList />} />
+          <Route path="wishlist" element={<Wishlist />} />
           <Route path="orders" element={<UserOrder />} />
           <Route path="orders/:id" element={<OrderDetails />} />
         </Route>
