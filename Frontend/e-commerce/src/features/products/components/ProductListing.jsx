@@ -71,6 +71,7 @@ export default function ProductListing() {
       <FilterSidebar
         filters={filters}
         onChange={handleChange}
+        onClear={() => setSearchParams(new URLSearchParams())}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />

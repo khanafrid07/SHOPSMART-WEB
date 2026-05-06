@@ -4,7 +4,7 @@ import FilterItem from "./FilterItem";
 import DiscountItem from "./DiscountItem";
 import { CATEGORIES, GENDERS, DISCOUNTS, SUB_TYPES } from "./filterConfig";
 
-export default function FilterSidebar({ filters, onChange, open, onClose }) {
+export default function FilterSidebar({ filters, onChange, open, onClose, onClear }) {
   const { category, gender, type, sort, discount } = filters;
 
   const types = (() => {
@@ -49,7 +49,7 @@ export default function FilterSidebar({ filters, onChange, open, onClose }) {
           <div className="flex items-center gap-3">
             {hasActive && (
               <button
-                onClick={() => ["category", "gender", "type", "price", "discount", "search"].forEach(k => onChange(k, ""))}
+                onClick={onClear}
                 className="group flex items-center gap-1.5 text-[11px] font-medium text-gray-500 hover:text-red-500 transition-colors uppercase tracking-wider"
                 title="Clear all filters"
               >

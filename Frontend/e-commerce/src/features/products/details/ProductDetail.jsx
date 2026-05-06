@@ -22,11 +22,21 @@ export default function ProductDetail() {
     const user = useSelector((state) => state.auth.user)
     useEffect(() => {
         if (product) {
-            const hasVariantImg = product?.variants?.find((v) => v.images.length > 0)
+            const selectVariantByStock = product?.variants?.find((v) => v.stock > 0)
+            console.log("selectVariantByStock", selectVariantByStock)
+            if (selectVariantByStock) {
+                setSelectedVariant(selectVariantByStock)
 
-            setSelectedVariant(product?.variants?.[0])
+            } else {
+                setSelectedVariant(product?.variants?.[0])
+
+            }
+
+
         }
     }, [product])
+    console.log("selectedvariant", selectedVariant)
+    console.log("product", product)
 
 
     const handleAddToCart = async () => {

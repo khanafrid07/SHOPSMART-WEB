@@ -6,7 +6,7 @@ import { Star } from "lucide-react";
 import { notifyError, notifySuccess } from "../../../utils/notify";
 import AverageRating from "./AverageRating";
 export default function Reviews({ reviews, refetch }) {
-  const [createReviews] = useCreateReviewsMutation();
+  const [createReviews, { isLoading }] = useCreateReviewsMutation();
   const { id } = useParams();
 
   const [alert, setAlert] = useState({ message: "", type: "success" });
@@ -16,6 +16,7 @@ export default function Reviews({ reviews, refetch }) {
     comment: "",
     productId: id,
   });
+  console.log(review, "review")
 
   const [hover, setHover] = useState(0);
 
@@ -37,8 +38,9 @@ export default function Reviews({ reviews, refetch }) {
         notifyError("Please select a rating")
         return
       }
-      await createReviews(review).unwrap();
-      notifySuccess("Review added successfully")
+      const response = await createReviews(review).unwrap();
+      console.log(response, "response")
+      notifySuccess(response?.message)
       refetch()
 
       setReview({ rating: 0, comment: "", productId: id });
@@ -111,10 +113,11 @@ export default function Reviews({ reviews, refetch }) {
 
         {/* Submit */}
         <button
+          disabled={isLoading}
           type="submit"
           className="px-6 py-2 rounded-xl bg-black text-white text-sm font-medium hover:opacity-90 transition"
         >
-          Post Review
+          {isLoading ? "Posting..." : "Post Review"}
         </button>
       </form>
 
