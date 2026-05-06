@@ -2,15 +2,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser, setAuthChecked } from "./features/auth/authSlice";
-
 import UserLayout from "./layout/UserLayout.jsx";
 import Cart from "./features/cart/Cart.jsx";
 import Checkout from "./Pages/user/Checkout.jsx";
 import Payment from "./Pages/user/Payment.jsx";
 import UserOrder from "./Pages/user/UserOrder.jsx";
 import OrderDetails from "./features/orders/user/components/OrderDetails.jsx";
+import Wishlist from "./features/wishlist/Wishlist.jsx"
 import Login from "./features/auth/Login";
-import Wishlist from "./features/wishlist/wishlist.jsx";
 import Home from "./Pages/public/Home.jsx";
 import CategoryFilter from "./features/products/category/CateogryFilter.jsx";
 import ProductDetail from "./features/products/details/ProductDetail.jsx";
