@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router()
-const { verifyAdmin } = require("../middlewares/verifyUser.js")
+const { verifyAdmin, verifyToken } = require("../middlewares/verifyUser.js")
 const upload = require("../config/multer.js")
 const { validate } = require("../middlewares/validate.js")
 const { productSchema } = require("../shared/ProductSchema.js")
@@ -66,11 +66,11 @@ router.get("/", getProducts);
 router.get("/:id", getProductById);
 
 
-router.post("/", verifyAdmin, upload.any(), parseFormData, validate(productSchema), createProduct);
+router.post("/", verifyToken, verifyAdmin, upload.any(), parseFormData, validate(productSchema), createProduct);
 
 
-router.put("/:id", verifyAdmin, upload.any(), parseFormData, validate(productSchema), updateProduct);
+router.put("/:id", verifyToken, verifyAdmin, upload.any(), parseFormData, validate(productSchema), updateProduct);
 
-router.delete("/:id", verifyAdmin, deleteProduct)
+router.delete("/:id", verifyToken, verifyAdmin, deleteProduct)
 
 module.exports = router

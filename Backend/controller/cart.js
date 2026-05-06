@@ -28,6 +28,7 @@ const getCart = async (req, res) => {
 const addToCart = async (req, res) => {
     try {
         const { productId, variantId, quantity } = req.body;
+        console.log(productId, variantId, quantity, "hit")
 
         let existingCartItems = await Cart.findOne({ user: req.userId });
 
@@ -126,7 +127,6 @@ const addToCart = async (req, res) => {
 const updateCart = async (req, res) => {
     try {
         const { productId, variantId, quantity } = req.body;
-        (productId, "pid", variantId, "vid", quantity, "qty")
         const cart = await Cart.findOne({ user: req.userId }).populate("items.product");
         if (!cart) return res.status(404).json({ message: "Cart not found" });
         const item = cart.items.find((item) => {
@@ -134,7 +134,9 @@ const updateCart = async (req, res) => {
         })
 
         if (!item) return res.status(404).json({ message: "Item not in cart" });
-
+        const product = await Product.findById(productId);
+        const variant = product.variants.find((variant) => variant._id.toString() === variantId.toString());
+        if (variant.stock < quantity) return res.status(400).json({ message: "Quantity exceeds stock" });
         item.quantity = quantity;
         cart.totalPrice = cart.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
 

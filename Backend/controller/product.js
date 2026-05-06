@@ -87,22 +87,23 @@ const getProducts = async (req, res) => {
             filter["category.gender"] = { $regex: `^${gender}$`, $options: "i" };
         }
 
-        (filter, "filter")
         if (sort === "featured") {
             filter.isFeatured = true;
+            filter.isActive = true;
+            filter.stock = { $gt: 0 };
         }
         if (discount) {
             filter.discount = { $gt: Number(discount) };
         }
         let sortQuery = {};
-        if (sort === "trending") sortQuery = { soldCount: -1 };
-        else if (sort === "newest") sortQuery = { createdAt: -1 };
-        else if (sort === "priceLow") sortQuery = { basePrice: 1 };
-        else if (sort === "priceHigh") sortQuery = { basePrice: -1 };
+        if (sort === "trending") sortQuery = { soldCount: -1, stock: 1 };
+        else if (sort === "newest") sortQuery = { createdAt: -1, stock: 1 };
+        else if (sort === "priceLow") sortQuery = { basePrice: 1, stock: 1 };
+        else if (sort === "priceHigh") sortQuery = { basePrice: -1, stock: 1 };
 
         const allProducts = await Product.find(filter)
             .sort(sortQuery)
-            .limit(Number(limit));
+            .limit(limit ? Number(limit) : undefined);
 
         if (!allProducts.length) {
             return res.status(200).json({ allProducts: [] });

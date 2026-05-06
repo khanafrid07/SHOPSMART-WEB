@@ -2,12 +2,28 @@ const Order = require("../models/order");
 const Product = require("../models/product");
 const User = require("../models/user");
 const { orderConfirmedMail } = require("../services/OrderConfirmedMail.js");
-const getOrders = async (req, res) => {
+const getMyOrders = async (req, res) => {
     try {
         const userId = req.userId;
+        const user = await User.findById(userId);
+
         const orders = await Order.find({ user: userId })
             .populate("items.product")
-            .populate("user");
+            .populate("user")
+            .sort({ createdAt: -1 });
+
+        res.status(200).json(orders);
+    } catch (err) {
+        res.status(500).json({ message: "Failed to fetch orders", error: err.message });
+    }
+}
+
+const adminGetOrders = async (req, res) => {
+    try {
+        const orders = await Order.find({})
+            .populate("items.product")
+            .populate("user")
+            .sort({ createdAt: -1 });
 
         res.status(200).json(orders);
     } catch (err) {
@@ -21,7 +37,7 @@ const getOrdersById = async (req, res) => {
 
         const order = await Order.findOne({
             _id: id,
-            user: req.userId
+
         })
             .populate("items.product")
             .populate("user");
@@ -205,7 +221,8 @@ const deleteOrder = async (req, res) => {
 
 
 module.exports = {
-    getOrders,
+    getMyOrders,
+    adminGetOrders,
     getOrdersById,
     createOrder,
     orderItemCancel,

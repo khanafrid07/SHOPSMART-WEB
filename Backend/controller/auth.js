@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/user.js");
-const { sendMail } = require("../services/sendGrid.js")
+const { sendMail } = require("../services/resend.js")
 const TempUser = require("../models/tempUser.js");
 const { OAuth2Client } = require("google-auth-library");
 const { sendWelcomeMail } = require("../services/welcomeMail.js");

@@ -17,6 +17,7 @@ const reviewRoute = require("./routes/reviewRoutes.js");
 const paymentRoute = require("./routes/paymentRoute.js");
 const bannerRoute = require("./routes/bannerRoutes.js");
 const dashboardStats = require("./routes/dashboardRoute.js");
+const wishlistRoute = require("./routes/wishlistRoute.js");
 
 // Middleware
 const allowedOrigins = [
@@ -60,6 +61,7 @@ app.use("/api/cart", cartRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/banners", bannerRoute);
 app.use("/api/dashboard", dashboardStats);
+app.use("/api/wishlist", wishlistRoute);
 
 // 404
 app.all("*", (req, res) => {

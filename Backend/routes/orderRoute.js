@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken: verifyUser } = require("../middlewares/verifyUser");
+const { verifyToken: verifyUser, verifyAdmin } = require("../middlewares/verifyUser");
 
-const { getOrders, getOrdersById, createOrder, orderItemCancel, updateOrderStatus, deleteOrder } = require("../controller/order");
+const { getMyOrders, adminGetOrders, getOrdersById, createOrder, orderItemCancel, updateOrderStatus, deleteOrder } = require("../controller/order");
 
 
-router.get("/", verifyUser, getOrders);
+router.get("/", verifyUser, getMyOrders);
+
+router.get("/admin", verifyUser, verifyAdmin, adminGetOrders);
 
 
 router.get("/:id", verifyUser, getOrdersById);
@@ -14,11 +16,11 @@ router.get("/:id", verifyUser, getOrdersById);
 router.post("/", verifyUser, createOrder);
 
 
-router.put("/:orderId/items/cancel", orderItemCancel);
+router.put("/:orderId/items/cancel", verifyUser, orderItemCancel);
 
-router.put("/:orderId/", updateOrderStatus);
+router.put("/:orderId/", verifyUser, verifyAdmin, updateOrderStatus);
 
 
-router.delete("/:id", deleteOrder);
+router.delete("/:id", verifyUser, verifyAdmin, deleteOrder);
 
 module.exports = router;
