@@ -77,7 +77,7 @@ export default function Payment() {
       }
 
       // ---------------- CARD PAYMENT ----------------
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/payment/create-intent`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/payment/create-intent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: total * 100 }),
