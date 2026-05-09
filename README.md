@@ -28,7 +28,7 @@ It provides users with a seamless shopping experience including product browsing
 ---
 
 ## 🌐 Live Demo
-👉 https://your-live-link-here.vercel.app
+👉 https://shopsmart-by-afrid.vercel.app
 
 ---
 
