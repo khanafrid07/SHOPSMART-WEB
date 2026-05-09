@@ -33,13 +33,14 @@ It provides users with a seamless shopping experience including product browsing
 ---
 
 ## 📸 Screenshots
-  ### Home Page & Banners
- <img src="./images/pic1.png" width="300"/>  <img src="./images/pic2.png" width="300"/>
+  ### Home Page & Banners & product Detail 
+ <img src="./images/pic1.png" width="300"/>  <img src="./images/pic2.png" width="300"/> <img src="./images/pic5.png" width="300"/>
 
  ### Admin Pannel & Checkout Page
  <img src="./images/checkout.png" width="300"/>  <img src="./images/pic6.png" width="300"/>
 
- 
+ ### Mobile Responsive 
+ <img src="./images/mob-5.jpeg" width="300"/>
 
 ---
 
