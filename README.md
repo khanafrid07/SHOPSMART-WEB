@@ -1,9 +1,8 @@
-##Full Stack e-commerce Website 
-
-#Description
-I am currently building this  fully functional e-commerce e with MERN STACK
+# ShopSmart E-commerce Platform
 
 
+
+ 
 ##TECH USED:
 -MERN
 -TAILWIND.CSS
