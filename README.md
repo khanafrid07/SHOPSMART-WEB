@@ -2,7 +2,7 @@
 
 ## 📌 Description
 ShopSmart is a fully functional full-stack e-commerce web application built using the MERN stack.  
-It provides users with a seamless shopping experience including product browsing, cart management, authentication, and order processing with a responsive and modern UI.
+It provides users with a seamless shopping experience including product browsing, cart management, authentication,Banner management, and order processing with a responsive and modern UI.
 
 ---
 
@@ -18,6 +18,7 @@ It provides users with a seamless shopping experience including product browsing
 ## ✨ Features
 - User Authentication (Register / Login)
 - Product browsing with categories
+- Admin Panel for Order, Banner Product user controlling
 - Add to cart / remove from cart
 - Order placement system
 - Responsive UI for all devices
@@ -33,13 +34,13 @@ It provides users with a seamless shopping experience including product browsing
 
 ## 📸 Screenshots
   ### Home Page
- ![Home Page](./images/pic1.png)
- ### Product Page
- ![Product Page](./images/mob-5.jpeg) 
+ <img src="./images/pic1.png" width="300"/>
+ ### Banners
+ <img src="./images/pic2.png" width="300"/>
  ### Admin Pannel
- ![Admin Pannel](./images/pic6.png)
+ <img src="./images/pic6.png" width="300"/>
 ### Chekout page
- ![Checkout Page](./images//checkout.png)  
+ <img src="./images/checkout.png" width="300"/>  
 
 ---
 
