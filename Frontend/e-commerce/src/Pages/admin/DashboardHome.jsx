@@ -10,7 +10,7 @@ export default function DashboardHome() {
     {
       name: "Total Revenue",
       icon: HandCoins,
-      number: `Rs. ${revenue30days}`,
+      number: `Rs.${revenue30days}`,
       change: "+12.5%",
       bgGradient: "from-blue-500/10 to-blue-600/10",
       iconBg: "bg-blue-100",
@@ -61,13 +61,13 @@ export default function DashboardHome() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-2 sm:mb-4">
         {dashboardStats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
             <div
               key={idx}
-              className={`bg-gradient-to-br ${stat.bgGradient} border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300`}
+              className={`bg-gradient-to-br ${stat.bgGradient} border border-gray-200 rounded-xl p-2 sm:p-4 hover:shadow-lg transition-all duration-300`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -75,7 +75,7 @@ export default function DashboardHome() {
                     {stat.name}
                   </p>
                   <p className="text-xs text-gray-500">Last 30 days</p>
-                  <p className="text-2xl sm:text-3xl mt-5 font-bold text-gray-900">
+                  <p className="text-lg sm:text-3xl mt-5 font-bold text-gray-900">
                     {stat.number}
                   </p>
                 </div>
@@ -84,7 +84,7 @@ export default function DashboardHome() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
+              <div className="flex items-center gap-2 sm:pt-4 border-t border-gray-200">
                 <TrendingUp
                   className={`w-4 h-4 ${stat.change.startsWith("+")
                     ? "text-green-600"

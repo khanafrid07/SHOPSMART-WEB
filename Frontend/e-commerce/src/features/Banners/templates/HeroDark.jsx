@@ -4,7 +4,7 @@ export default function HeroDark({ banner }) {
 
       {/* IMAGE */}
       <img
-        src={banner.image}
+        src={banner.image.url}
         alt={banner.title}
         className="w-full h-full object-cover"
       />

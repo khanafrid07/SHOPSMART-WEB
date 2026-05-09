@@ -33,10 +33,11 @@ It provides users with a seamless shopping experience including product browsing
 
 ## 📸 Screenshots
 (Add your images here)
-- Home Page  
-- Product Page  
-- Cart Page  
-- Checkout Page  
+ ![Home Page] (./images/pic1.png)
+ 
+ ![Product Page]  (./images/mob5.png) 
+ Cart Page  
+ Checkout Page  
 
 ---
 
