@@ -32,12 +32,14 @@ It provides users with a seamless shopping experience including product browsing
 ---
 
 ## 📸 Screenshots
-(Add your images here)
- ![Home Page] (./images/pic1.png)
- 
- ![Product Page]  (./images/mob5.png) 
- Cart Page  
- Checkout Page  
+  ### Home Page
+ ![Home Page](./images/pic1.png)
+ ### Product Page
+ ![Product Page](./images/mob-5.jpeg) 
+ ### Admin Pannel
+ ![Admin Pannel](./images/pic6.png)
+### Chekout page
+ ![Checkout Page](./images//checkout.png)  
 
 ---
 
