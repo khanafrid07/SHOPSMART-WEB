@@ -3,6 +3,7 @@ const { generateSKU } = require("../utils/skuGenerator.js");
 const fs = require("fs")
 const cloudinary = require("../config/cloudinary.js");
 const Product = require("../models/product.js")
+const { redis, invalidateProductCache } = require("../config/redis.js");
 const getProducts = async (req, res) => {
     try {
         const {
@@ -102,14 +103,23 @@ const getProducts = async (req, res) => {
         else if (sort === "newest") sortQuery = { createdAt: -1, stock: 1 };
         else if (sort === "priceLow") sortQuery = { basePrice: 1, stock: 1 };
         else if (sort === "priceHigh") sortQuery = { basePrice: -1, stock: 1 };
+        const PRODUCT_CACHE_KEY = `products:list:${JSON.stringify(req.query)}`;
+        console.log(`[getProducts] Checking Redis for key: "${PRODUCT_CACHE_KEY}"`);
 
+        const cachedProducts = await redis.get(PRODUCT_CACHE_KEY);
+        if (cachedProducts) {
+            console.log(`[getProducts] Cache HIT for key: "${PRODUCT_CACHE_KEY}"`);
+            return res.status(200).json({ allProducts: JSON.parse(cachedProducts) });
+        }
+
+        console.log(`[getProducts] Cache MISS for key: "${PRODUCT_CACHE_KEY}". Fetching from MongoDB...`);
         const allProducts = await Product.find(filter)
             .sort(sortQuery)
             .limit(limit ? Number(limit) : undefined);
 
-        if (!allProducts.length) {
-            return res.status(200).json({ allProducts: [] });
-        }
+        // Cache even empty results to prevent cache penetration
+        await redis.set(PRODUCT_CACHE_KEY, JSON.stringify(allProducts), "EX", 60);
+        console.log(`[getProducts] Cached results in Redis for key: "${PRODUCT_CACHE_KEY}"`);
         return res.status(200).json({ allProducts });
 
     } catch (err) {
@@ -124,8 +134,21 @@ const getProductById = async (req, res) => {
     try {
         let { id } = req.params;
         id = id.split("-").pop();
+        const PRODUCT_CACHE_KEY = `products:item:${id}`;
+        console.log(`[getProductById] Checking Redis for key: "${PRODUCT_CACHE_KEY}"`);
+
+        const cachedProduct = await redis.get(PRODUCT_CACHE_KEY);
+        if (cachedProduct) {
+            console.log(`[getProductById] Cache HIT for key: "${PRODUCT_CACHE_KEY}"`);
+            return res.status(200).json({ product: JSON.parse(cachedProduct) });
+        }
+
+        console.log(`[getProductById] Cache MISS for key: "${PRODUCT_CACHE_KEY}". Fetching from MongoDB...`);
         const product = await Product.findById(id).populate("reviews");
-        if (!product) return res.status(404).json({ message: "Product Not Found!", error: err.message });
+        if (!product) return res.status(404).json({ message: "Product Not Found!" });
+
+        await redis.set(PRODUCT_CACHE_KEY, JSON.stringify(product), "EX", 60);
+        console.log(`[getProductById] Cached product in Redis for key: "${PRODUCT_CACHE_KEY}"`);
         res.status(200).json({ product });
     } catch (err) {
         res.status(500).json({ message: "Error fetching product", error: err.message });
@@ -286,7 +309,9 @@ const createProduct = async (req, res) => {
             images: uploadedImage,
         });
 
+
         await newProduct.save();
+        await invalidateProductCache();
 
         return res.status(201).json({
             message: "Product added successfully",
@@ -458,6 +483,7 @@ const updateProduct = async (req, res) => {
             },
             { new: true }
         );
+        await invalidateProductCache(id);
 
         return res.status(200).json({
             message: "Product updated successfully",
@@ -480,7 +506,8 @@ const deleteProduct = async (req, res) => {
         if (!deletedProduct) {
             return res.status(404).json({ message: "Product not found" })
         }
-        return res.status(200).json({ message: "Product deleted successfully" })
+        await invalidateProductCache(id);
+        return res.status(200).json({ message: "Product deleted successfully" });
     } catch (err) {
         return res.status(500).json({ message: "Error deleting Product", error: err.message })
     }

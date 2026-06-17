@@ -5,46 +5,50 @@ const { sendMail } = require("../services/resend.js")
 const TempUser = require("../models/tempUser.js");
 const { OAuth2Client } = require("google-auth-library");
 const { sendWelcomeMail } = require("../services/welcomeMail.js");
-
+const { redis } = require("../config/redis.js");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 const sendOtp = async (req, res) => {
     const { email, name, password } = req.body;
 
     try {
         const user = await User.findOne({ email });
+        const SIGNUP_USER_KEY = `user:${email}`;
+        const RESEND_KEY = `otp-resend:${email}`;
+        const cooldown = await redis.get(RESEND_KEY)
+
         if (user) {
             return res.status(409).json({ message: "User already exists" });
         }
 
-        const otp = Math.floor(1000 + Math.random() * 9000);
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const tempUser = await TempUser.findOne({ email });
-        if (tempUser) {
-            const lastSent = new Date(tempUser.updatedAt).getTime()
-            const now = Date.now()
-            if (now - lastSent < 60000) return res.status(429).json({ message: "Please try again in 1 minute" })
+        if (cooldown) {
+            return res.status(429).json({ message: "Too many requests. Retry after 60 seconds." })
         }
 
-        await TempUser.findOneAndUpdate(
-            { email },
-            {
-                email,
-                name,
-                password: hashedPassword,
-                otp,
-                expiresAt: Date.now() + 10 * 60 * 1000,
-            },
-            {
-                upsert: true,
-                new: true,
-            }
-        );
+        const otp = Math.floor(10000 + Math.random() * 90000);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const payload = {
+            name,
+            email,
+            password: hashedPassword,
+            otp,
+            createdAt: Date.now(),
+        }
+        await redis.set(RESEND_KEY, 1, "EX", 60);
 
-        await sendMail({
-            to: email,
-            subject: "OTP",
-            html: `<div><h1>Your OTP is ${otp}</h1></div>`,
-        });
+
+        await redis.set(SIGNUP_USER_KEY, JSON.stringify(payload), "EX", 600);
+        try {
+            await sendMail({
+                to: email,
+                subject: "OTP",
+                html: `<div><h1>Your OTP is ${otp}</h1></div>`,
+            });
+
+        } catch (err) {
+            console.log("Failed to send OTP", err.message)
+            await redis.del(SIGNUP_USER_KEY);
+            return res.status(500).json({ message: "Failed to send OTP" });
+        }
 
         res.status(200).json({ message: "OTP sent successfully" });
 
@@ -56,28 +60,64 @@ const sendOtp = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
-    ("email", email, "otp", otp);
-
     try {
 
-        const temp = await TempUser.findOne({ email });
-        ("temp", temp);
-        if (!temp) {
-            return res.status(404).json({ message: "No OTP request found" });
-        }
-        if (temp.expiresAt < Date.now()) {
-            await TempUser.deleteOne({ email });
-            return res.status(400).json({ message: "OTP expired" });
+        const SIGNUP_USER_KEY = `user:${email}`
+        const userData = await redis.get(SIGNUP_USER_KEY);
+        const OTP_ATTEMPTS_KEY = `otp-attempts:${email}`
+
+        if (!userData) {
+            return res.status(404).json({
+                message: "No OTP request found"
+            });
         }
 
-        if (String(temp.otp) !== String(otp)) {
-            return res.status(401).json({ message: "Invalid OTP" });
+        const user = JSON.parse(userData);
+
+        if (!user.otp) {
+            return res.status(400).json({ message: "OTP has expired or invalid" })
         }
+
+
+
+        if (String(user.otp) !== String(otp)) {
+            const incremented = await redis.incr(OTP_ATTEMPTS_KEY);
+
+            if (incremented === 1) {
+                await redis.expire(OTP_ATTEMPTS_KEY, 60);
+            }
+
+            const attempts =
+                Number(await redis.get(OTP_ATTEMPTS_KEY)) || 0;
+
+            if (attempts >= 3) {
+                const ttl = await redis.ttl(OTP_ATTEMPTS_KEY);
+
+                return res.status(429).json({
+                    message: `Too many attempts. Retry after ${ttl} seconds.`
+                });
+            }
+
+
+            return res.status(401).json({
+                message: "Invalid OTP"
+            });
+        }
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            await redis.del(SIGNUP_USER_KEY);
+            return res.status(409).json({
+                message: "User already exists"
+            });
+        }
+
+
 
         const newUser = await User.create({
-            name: temp.name,
-            email: temp.email,
-            password: temp.password,
+            name: user.name,
+            email: user.email,
+            password: user.password,
         });
         const token = jwt.sign(
             { id: newUser._id },
@@ -85,8 +125,9 @@ const verifyOtp = async (req, res) => {
             { expiresIn: "1d" }
         );
 
-
-        await TempUser.deleteOne({ email });
+        await redis.del(SIGNUP_USER_KEY);
+        await redis.del(OTP_ATTEMPTS_KEY);
+        await redis.del(`otp-resend:${email}`);
         await sendWelcomeMail(newUser)
         res.status(200).json({
             message: "Account created successfully",
@@ -103,20 +144,39 @@ const verifyOtp = async (req, res) => {
 const login = async (req, res) => {
     let { email, password } = req.body;
     try {
+        const ATTEMPT_KEY = `login-attempts:${email}`
+        const attempts =
+            Number(await redis.get(ATTEMPT_KEY)) || 0;
+
+        if (attempts >= 5) {
+            const ttl = await redis.ttl(ATTEMPT_KEY);
+
+            return res.status(429).json({
+                message: `Too many attempts. Retry after ${ttl} seconds.`
+            });
+        }
+
+
         let user = await User.findOne({ email })
         if (!user) {
-            return res.status(404).json({ message: "Invalid Email or Password" })
+            return res.status(401).json({ message: "Invalid Email or Password" })
         }
-        if (!user || user.provider === "google") {
+        if (user.provider === "google") {
             return res.status(400).json({ message: "Use Google login" });
         }
         let isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
-            return res.status(401).json({ message: "Invalid Email or Password" })
+            const newAttemmpts = await redis.incr(ATTEMPT_KEY);
+            if (newAttemmpts === 1) {
+                await redis.expire(ATTEMPT_KEY, 600);
+            }
+            return res.status(401).json({ message: `Invalid Email or Password` })
         }
 
+
+        await redis.del(ATTEMPT_KEY);
         let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" })
-        res.status(201).json({ user, token })
+        res.status(200).json({ user, token })
     } catch (err) {
         res.status(400).json({ message: err.message })
     }
@@ -163,7 +223,7 @@ const googleLogin = async (req, res) => {
 
 const fetchUser = async (req, res) => {
     try {
-        const authHeader = req.headers.authorization; // "Bearer <token>"
+        const authHeader = req.headers.authorization;
         if (!authHeader) return res.status(401).json({ message: "No token" });
 
         const token = authHeader.split(" ")[1];

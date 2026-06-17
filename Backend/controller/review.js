@@ -1,6 +1,7 @@
 const Review = require("../models/review.js")
 const Product = require("../models/product.js")
 const User = require("../models/user.js")
+const { invalidateProductCache } = require("../config/redis.js");
 
 const createReview = async (req, res) => {
     try {
@@ -13,6 +14,10 @@ const createReview = async (req, res) => {
         reviewProduct.reviews.push(review._id)
         await review.save()
         await reviewProduct.save()
+        
+        // Invalidate single product cache so new reviews are loaded on the next fetch
+        await invalidateProductCache(productId);
+
         res.status(200).json({ message: "Review Added Successful", review })
 
     } catch (err) {
