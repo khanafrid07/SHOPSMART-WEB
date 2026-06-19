@@ -7,6 +7,22 @@ const { OAuth2Client } = require("google-auth-library");
 const { sendWelcomeMail } = require("../services/welcomeMail.js");
 const { redis } = require("../config/redis.js");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+const { emailQueue } = require("../queues/email.queue")
+
+
+const generateToken = (user) => {
+    const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
+    return { accessToken, refreshToken };
+}
+
+const cookieOptions = {
+    maxAge: 15 * 60 * 1000,
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production"
+}
+
 const sendOtp = async (req, res) => {
     const { email, name, password } = req.body;
 
@@ -37,18 +53,19 @@ const sendOtp = async (req, res) => {
 
 
         await redis.set(SIGNUP_USER_KEY, JSON.stringify(payload), "EX", 600);
-        try {
-            await sendMail({
-                to: email,
-                subject: "OTP",
-                html: `<div><h1>Your OTP is ${otp}</h1></div>`,
-            });
 
-        } catch (err) {
-            console.log("Failed to send OTP", err.message)
-            await redis.del(SIGNUP_USER_KEY);
-            return res.status(500).json({ message: "Failed to send OTP" });
-        }
+        await emailQueue.add("sendEmail", {
+            to: email,
+            subject: "OTP",
+            html: `<div><h1>Your OTP is ${otp}</h1></div>`,
+        },
+            {
+                backoff: { delay: 2000, type: "exponential" },
+                attempts: 3,
+                removeOnComplete: true,
+                removeOnFail: true,
+            }
+        )
 
         res.status(200).json({ message: "OTP sent successfully" });
 
@@ -119,20 +136,22 @@ const verifyOtp = async (req, res) => {
             email: user.email,
             password: user.password,
         });
-        const token = jwt.sign(
-            { id: newUser._id },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
-        );
+        const { accessToken, refreshToken } = generateToken(newUser);
+        await redis.set(`refresh:${newUser._id}`, refreshToken, "EX", 7 * 24 * 60 * 60);
+
 
         await redis.del(SIGNUP_USER_KEY);
         await redis.del(OTP_ATTEMPTS_KEY);
         await redis.del(`otp-resend:${email}`);
-        await sendWelcomeMail(newUser)
+
+        await emailQueue.add("sendWelcomeMail", newUser)
+        res.cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 });
+        res.cookie("refreshToken", refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
         res.status(200).json({
             message: "Account created successfully",
             user: newUser,
-            token,
+            token: accessToken,
         });
 
 
@@ -173,10 +192,14 @@ const login = async (req, res) => {
             return res.status(401).json({ message: `Invalid Email or Password` })
         }
 
+        const { accessToken, refreshToken } = generateToken(user);
+        await redis.set(`refresh:${user._id}`, refreshToken, "EX", 7 * 24 * 60 * 60);
+
 
         await redis.del(ATTEMPT_KEY);
-        let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" })
-        res.status(200).json({ user, token })
+        res.cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 });
+        res.cookie("refreshToken", refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        res.status(200).json({ user, token: accessToken })
     } catch (err) {
         res.status(400).json({ message: err.message })
     }
@@ -206,14 +229,15 @@ const googleLogin = async (req, res) => {
             await user.save();
         }
 
+        const { accessToken, refreshToken } = generateToken(user);
+        await redis.set(`refresh:${user._id}`, refreshToken, "EX", 7 * 24 * 60 * 60);
 
-
-        const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-
+        res.cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 });
+        res.cookie("refreshToken", refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
         res.status(200).json({
             message: "Login successful",
             user: { email, name },
-            token: jwtToken,
+            token: accessToken,
         });
     } catch (err) {
         console.error("Google login error:", err);
@@ -221,12 +245,41 @@ const googleLogin = async (req, res) => {
     }
 };
 
+const refreshAccessToken = async (req, res) => {
+    try {
+        const { refreshToken } = req.cookies;
+        if (!refreshToken) {
+            return res.status(400).json({ message: "Refresh Token not found" })
+        }
+        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        const storedRefreshToken = await redis.get(`refresh:${decoded.id}`);
+        if (!storedRefreshToken || storedRefreshToken !== refreshToken) {
+            return res.status(401).json({ message: "Invalid or expired refresh token" });
+        }
+        const user = await User.findById(decoded.id);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        const { accessToken, refreshToken: newRefreshToken } = generateToken(user);
+        await redis.set(`refresh:${user._id}`, newRefreshToken, "EX", 7 * 24 * 60 * 60);
+        res.cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 });
+        res.cookie("refreshToken", newRefreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        res.status(200).json({ user, token: accessToken })
+    } catch (err) {
+        res.status(401).json({ message: err.message });
+    }
+}
+
 const fetchUser = async (req, res) => {
     try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) return res.status(401).json({ message: "No token" });
+        let token = req.cookies?.accessToken;
 
-        const token = authHeader.split(" ")[1];
+        if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+            token = req.headers.authorization.split(" ")[1];
+        }
+
+        if (!token || token === "null" || token === "undefined") {
+            return res.status(400).json({ message: "Token is required" });
+        }
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id).select("-password");
         if (!user) return res.status(404).json({ message: "User not found" });
@@ -236,6 +289,25 @@ const fetchUser = async (req, res) => {
         res.status(401).json({ message: err.message });
     }
 };
+const logout = async (req, res) => {
+    try {
+        const { refreshToken } = req.cookies;
+        if (!refreshToken) {
+            return res.status(400).json({ message: "Refresh Token not found" })
+        }
+        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        const storedRefreshToken = await redis.get(`refresh:${decoded.id}`);
+        if (!storedRefreshToken || storedRefreshToken !== refreshToken) {
+            return res.status(401).json({ message: "Invalid or expired refresh token" });
+        }
+        await redis.del(`refresh:${decoded.id}`);
+        res.clearCookie("accessToken");
+        res.clearCookie("refreshToken");
+        res.status(200).json({ message: "Logout successful" })
+    } catch (err) {
+        res.status(401).json({ message: err.message });
+    }
+}
 
 const address = async (req, res) => {
     try {
@@ -259,7 +331,7 @@ const address = async (req, res) => {
 
 };
 
-module.exports = { sendOtp, verifyOtp, login, googleLogin, fetchUser, address }
+module.exports = { sendOtp, verifyOtp, login, googleLogin, fetchUser, address, refreshAccessToken, logout }
 
 
 

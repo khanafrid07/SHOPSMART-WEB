@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-const BaseUrl = import.meta.env.VITE_API_URL + "/api/auth"
-const localhostUrl = "http://localhost:8080/api/auth"
+// const BaseUrl = import.meta.env.VITE_API_URL + "/api/auth"
+const BaseUrl = "http://localhost:8080/api/auth"
 
 export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/send-otp`, data);
+    const res = await axios.post(`${BaseUrl}/send-otp`, data, { withCredentials: true });
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to send OTP")
@@ -13,7 +13,7 @@ export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWit
 })
 export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/verify-otp`, data);
+    const res = await axios.post(`${BaseUrl}/verify-otp`, data, { withCredentials: true });
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to verify OTP")
@@ -24,21 +24,31 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${BaseUrl}/login`, data);
+      const res = await axios.post(`${BaseUrl}/login`, data, { withCredentials: true });
       return res.data;
     } catch (err) {
-      ("ERROR:", err.response?.data);
+
       return rejectWithValue(err?.response?.data?.message || "Login failed");
     }
   }
 );
 export const loginWithGoogle = createAsyncThunk("auth/google", async (token, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/google`, { token });
+    const res = await axios.post(`${BaseUrl}/google`, { token }, { withCredentials: true });
     return res.data
   } catch (err) {
-    ("GOOGLE ERROR:", err.response?.data);
+
     return rejectWithValue(err?.response?.message || "Login failed")
+  }
+})
+
+export const logoutUser = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
+  try {
+    const res = await axios.post(`${BaseUrl}/logout`, {}, { withCredentials: true });
+    return res.data
+  } catch (err) {
+
+    return rejectWithValue(err?.response?.message || "Logout failed")
   }
 })
 
@@ -46,15 +56,12 @@ export const addAddress = createAsyncThunk(
   "auth/addAddress",
   async (data, { rejectWithValue, dispatch }) => {
     try {
-      const token = localStorage.getItem("token");
+
       const res = await axios.post(
         `${BaseUrl}/address`,
         data,
         {
           withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
       );
 
@@ -70,21 +77,14 @@ export const fetchUser = createAsyncThunk(
   "auth/fetchUser",
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token || token == undefined || token == null || token.trim() == '') {
-        return rejectWithValue("No token");
-      }
-
       const res = await axios.get(`${BaseUrl}/fetchUser`, {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
       });
       return res.data;
     } catch (err) {
-      if (err?.response?.status === 401) {
-        localStorage.removeItem("token");
-      }
-      return rejectWithValue(err?.response?.data?.message || err.message);
+      return rejectWithValue(
+        err?.response?.data?.message || err.message
+      );
     }
   }
 );
@@ -93,7 +93,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    token: localStorage.getItem("token") || null,
     error: null,
     currentAddress: JSON.parse(localStorage.getItem("currentAddress")) || null,
     loading: false,
@@ -109,8 +108,7 @@ const authSlice = createSlice({
     },
     logout(state) {
       state.user = null;
-      state.token = null;
-      localStorage.removeItem("token");
+
     },
     setCurrentAddress: (state, action) => {
       state.currentAddress = action.payload
@@ -142,8 +140,6 @@ const authSlice = createSlice({
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
-        localStorage.setItem("token", action.payload.token);
         state.otpLoading = false;
       })
       .addCase(verifyOtp.rejected, (state, action) => {
@@ -160,8 +156,6 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
-        localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -173,9 +167,7 @@ const authSlice = createSlice({
       })
       .addCase(loginWithGoogle.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user
-        state.token = action.payload.token;
-        localStorage.setItem("token", action.payload.token);
+        state.user = action.payload.user;
       })
       .addCase(loginWithGoogle.rejected, (state, action) => {
         state.loading = false;
@@ -211,7 +203,18 @@ const authSlice = createSlice({
       .addCase(addAddress.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+
+      //logout
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.loading = false;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
   },
 });
 

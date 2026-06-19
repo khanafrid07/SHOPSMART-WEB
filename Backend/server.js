@@ -2,9 +2,13 @@ require("dotenv").config();
 const DB = require("./config/db.js");
 DB();
 
+// Initialize workers
+require("./workers/email.worker.js");
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -26,6 +30,7 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
+
     origin: function (origin, callback) {
 
         if (!origin) return callback(null, true);
@@ -40,6 +45,7 @@ app.use(cors({
 }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

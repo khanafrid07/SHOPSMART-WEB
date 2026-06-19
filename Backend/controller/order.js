@@ -2,6 +2,7 @@ const Order = require("../models/order");
 const Product = require("../models/product");
 const User = require("../models/user");
 const { orderConfirmedMail } = require("../services/OrderConfirmedMail.js");
+const emailQueue = require("../queues/email.queue.js")
 const getMyOrders = async (req, res) => {
     try {
         const userId = req.userId;
@@ -95,11 +96,14 @@ const createOrder = async (req, res) => {
 
         const user = await User.findById(req.userId);
 
-        // Fire-and-forget: email must not block or fail the order response
         if (user) {
-            orderConfirmedMail(user, newOrder).catch((err) =>
-                console.error("Order confirmation email failed:", err.message)
-            );
+            emailQueue.add("sendOrderConfirmedMail", { user, newOrder }, {
+                attempts: 3,
+                backoff: {
+                    delay: 2000,
+                    type: "exponential"
+                }
+            })
         }
 
         return res.status(201).json({

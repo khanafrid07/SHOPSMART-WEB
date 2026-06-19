@@ -1,13 +1,15 @@
+import { X } from "lucide-react";
+
 export default function BannerFilters({ filters, setFilters }) {
   const types = ["all", "promo", "hero", "category"];
   const statuses = ["all", "active", "inactive"];
 
   return (
-    <div className="space-y-3">
-
-      <div className="overflow-x-auto scrollbar-hide">
-        <div className="flex w-max gap-2 bg-gray-100 p-1 rounded-xl">
-
+    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100 space-y-6">
+      {/* Type Filter */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-900 mb-3">Banner Type</h3>
+        <div className="flex flex-wrap gap-2">
           {types.map((type) => {
             const isActive = (filters.type || "all") === type;
 
@@ -20,23 +22,23 @@ export default function BannerFilters({ filters, setFilters }) {
                     type: type === "all" ? "" : type,
                   })
                 }
-                className={`px-4 py-2 text-sm rounded-lg whitespace-nowrap transition ${isActive
-                  ? "bg-white shadow text-gray-900"
-                  : "text-gray-500 hover:text-gray-800"
-                  }`}
+                className={`px-4 py-2 text-sm rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
+                  isActive
+                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
               >
                 {type}
               </button>
             );
           })}
-
         </div>
       </div>
 
-      {/*  STATUS FILTER */}
-      <div className="overflow-x-auto scrollbar-hide">
-        <div className="flex w-max gap-2 bg-gray-100 p-1 rounded-xl">
-
+      {/* Status Filter */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-900 mb-3">Status</h3>
+        <div className="flex flex-wrap gap-2">
           {statuses.map((status) => {
             const isActive = (filters.status || "all") === status;
 
@@ -49,29 +51,29 @@ export default function BannerFilters({ filters, setFilters }) {
                     status: status === "all" ? "" : status,
                   })
                 }
-                className={`px-4 py-2 text-sm rounded-lg whitespace-nowrap transition ${isActive
-                  ? "bg-white shadow text-gray-900"
-                  : "text-gray-500 hover:text-gray-800"
-                  }`}
+                className={`px-4 py-2 text-sm rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
+                  isActive
+                    ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
               >
                 {status}
               </button>
             );
           })}
-
         </div>
       </div>
 
-      {/*  CLEAR FILTER */}
+      {/* Clear Filters */}
       {(filters.type || filters.status) && (
         <button
           onClick={() => setFilters({ type: "", status: "" })}
-          className="text-xs text-gray-500 hover:text-black"
+          className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
         >
-          Clear Filters
+          <X size={16} />
+          Clear All Filters
         </button>
       )}
-
     </div>
   );
 }

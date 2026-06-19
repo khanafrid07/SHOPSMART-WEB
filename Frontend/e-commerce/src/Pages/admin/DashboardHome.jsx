@@ -1,6 +1,7 @@
 import { HandCoins, ShoppingCart, User, Package, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import useDashboardStats from "../../hooks/useDashboardStats";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/common/Loader"
 export default function DashboardHome() {
   const { recentOrders, revenue30days, totalOrders, totalCustomer, pendingDelivery, topProducts, isError, isLoading } = useDashboardStats()
   const navigate = useNavigate()
@@ -44,6 +45,10 @@ export default function DashboardHome() {
       iconColor: "text-orange-600",
     },
   ];
+
+  if(isLoading){
+    return <Loader/>
+  }
 
 
 

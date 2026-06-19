@@ -4,7 +4,7 @@ export const ProductApi = createApi({
   reducerPath: "productApi",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_API_URL}/api` || "http://localhost:8080/api",
+    baseUrl: 'http://localhost:8080/api',
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
 

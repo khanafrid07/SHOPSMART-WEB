@@ -13,6 +13,10 @@ export default function OtpPage({ otp, setOtp, handleResendOtp }) {
             return () => clearInterval(interval)
         }
     }, [timeLeft])
+    const handleResend = () => {
+        handleResendOtp();
+        setTimeLeft(60)
+    }
     return (
         <div className="space-y-1">
             <label className="text-xs font-medium text-gray-600">
@@ -32,7 +36,7 @@ export default function OtpPage({ otp, setOtp, handleResendOtp }) {
             <div className="flex justify-between">
                 <p className="text-sm text-gray-500">Resend OTP in {timeLeft}</p>
                 <button
-                    onClick={handleResendOtp}
+                    onClick={handleResend}
                     disabled={timeLeft > 0}
                     type="button"
                     className={`font-medium hover:text-blue-600 ${timeLeft > 0 ? 'opacity-50' : 'text-primary'}`}
