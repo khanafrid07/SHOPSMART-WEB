@@ -135,7 +135,7 @@ const getProductById = async (req, res) => {
         let { id } = req.params;
         id = id.split("-").pop();
         const PRODUCT_CACHE_KEY = `products:item:${id}`;
-        console.log(`[getProductById] Checking Redis for key: "${PRODUCT_CACHE_KEY}"`);
+
 
         const cachedProduct = await redis.get(PRODUCT_CACHE_KEY);
         if (cachedProduct) {
@@ -143,12 +143,10 @@ const getProductById = async (req, res) => {
             return res.status(200).json({ product: JSON.parse(cachedProduct) });
         }
 
-        console.log(`[getProductById] Cache MISS for key: "${PRODUCT_CACHE_KEY}". Fetching from MongoDB...`);
         const product = await Product.findById(id).populate("reviews");
         if (!product) return res.status(404).json({ message: "Product Not Found!" });
 
         await redis.set(PRODUCT_CACHE_KEY, JSON.stringify(product), "EX", 60);
-        console.log(`[getProductById] Cached product in Redis for key: "${PRODUCT_CACHE_KEY}"`);
         res.status(200).json({ product });
     } catch (err) {
         res.status(500).json({ message: "Error fetching product", error: err.message });

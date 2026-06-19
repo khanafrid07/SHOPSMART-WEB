@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// const BaseUrl = import.meta.env.VITE_API_URL + "/api/auth"
-const BaseUrl = "http://localhost:8080/api/auth"
+const BaseUrl = import.meta.env.VITE_API_URL + "/api/auth"
+
 
 export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWithValue }) => {
   try {
