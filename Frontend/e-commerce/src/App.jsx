@@ -10,6 +10,7 @@ import UserOrder from "./Pages/user/UserOrder.jsx";
 import OrderDetails from "./features/orders/user/components/OrderDetails.jsx";
 import Wishlist from "./features/wishlist/Wishlist.jsx";
 import Login from "./features/auth/Login";
+import ForgotPassword from "./features/auth/ForgotPassword.jsx";
 import Home from "./Pages/public/Home.jsx";
 import CategoryFilter from "./features/products/category/CateogryFilter.jsx";
 import ProductDetail from "./features/products/details/ProductDetail.jsx";
@@ -43,18 +44,11 @@ function AppContent() {
   const { authChecked } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
     const initAuth = async () => {
-      if (!token) {
-        dispatch(setAuthChecked(true));
-        return;
-      }
-
       try {
         await dispatch(fetchUser()).unwrap();
-      } finally {
-        dispatch(setAuthChecked(true));
+      } catch {
+
       }
     };
 

@@ -2,6 +2,7 @@ import GoogleLoginButton from "./GoogleLoginButton";
 import { Mail, Lock } from "lucide-react";
 import { initGoogleAuth } from "./initGoogleAuth";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 export default function LoginForm({
   email,
   setEmail,
@@ -13,6 +14,8 @@ export default function LoginForm({
   switchForm,
   setSwitchForm,
 }) {
+
+  const navigate = useNavigate();
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
@@ -62,6 +65,10 @@ export default function LoginForm({
               required
             />
           </div>
+        </div>
+        {/* Forgot Password */}
+        <div className="text-right">
+          <button onClick={() => setSwitchForm("forgot-password")} className="text-xs text-blue-600 hover:underline">Forgot password?</button>
         </div>
 
         {/* Error */}

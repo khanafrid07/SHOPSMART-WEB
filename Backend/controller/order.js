@@ -2,7 +2,7 @@ const Order = require("../models/order");
 const Product = require("../models/product");
 const User = require("../models/user");
 const { orderConfirmedMail } = require("../services/OrderConfirmedMail.js");
-const emailQueue = require("../queues/email.queue.js")
+const { emailQueue } = require("../queues/email.queue.js")
 const getMyOrders = async (req, res) => {
     try {
         const userId = req.userId;
@@ -97,7 +97,7 @@ const createOrder = async (req, res) => {
         const user = await User.findById(req.userId);
 
         if (user) {
-            emailQueue.add("sendOrderConfirmedMail", { user, newOrder }, {
+            await emailQueue.add("sendOrderConfirmedMail", { user, newOrder }, {
                 attempts: 3,
                 backoff: {
                     delay: 2000,

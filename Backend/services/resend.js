@@ -8,7 +8,7 @@ const sendMail = async (options) => {
             from: process.env.EMAIL_USER,
             subject: options.subject,
             text: options.text,
-            html: options.html,
+            html: options.text || options.html,
         };
         await sgMail.send(msg);
         console.log("Email sent successfully");

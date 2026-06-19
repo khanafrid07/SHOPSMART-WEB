@@ -38,7 +38,7 @@ export const loginWithGoogle = createAsyncThunk("auth/google", async (token, { r
     return res.data
   } catch (err) {
 
-    return rejectWithValue(err?.response?.message || "Login failed")
+    return rejectWithValue(err?.response?.data?.message || "Login failed")
   }
 })
 
@@ -48,7 +48,23 @@ export const logoutUser = createAsyncThunk("auth/logout", async (_, { rejectWith
     return res.data
   } catch (err) {
 
-    return rejectWithValue(err?.response?.message || "Logout failed")
+    return rejectWithValue(err?.response?.data?.message || "Logout failed")
+  }
+})
+export const forgotPasswordSendOtp = createAsyncThunk("/auth/forgot-password/send-otp", async (email, { rejectWithValue }) => {
+  try {
+    const res = await axios.post(`${BaseUrl}/forgot-password/send-otp`, { email })
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error?.response?.data?.message || "Failed to send OTP")
+  }
+})
+export const forgotPasswordVerifyOtp = createAsyncThunk("/auth/forgot-password/verify-otp", async (data, { rejectWithValue }) => {
+  try {
+    const res = await axios.post(`${BaseUrl}/forgot-password/verify-otp`, data, { withCredentials: true })
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error?.response?.data?.message || "Failed to verify OTP")
   }
 })
 
@@ -170,6 +186,28 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(loginWithGoogle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(forgotPasswordSendOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPasswordSendOtp.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(forgotPasswordSendOtp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(forgotPasswordVerifyOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPasswordVerifyOtp.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(forgotPasswordVerifyOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

@@ -5,15 +5,7 @@ export const ProductApi = createApi({
 
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080/api',
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-
-      return headers;
-    },
+    credentials: "include"
   }),
 
   tagTypes: ["Products"],

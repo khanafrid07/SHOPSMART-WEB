@@ -9,7 +9,7 @@ It provides users with a seamless shopping experience including product browsing
 ## 🚀 Tech Stack
 - **Frontend:** React.js, Tailwind CSS, DaisyUI, Framer Motion  
 - **State Management:** Redux Toolkit (RTK Query)  
-- **Backend:** Node.js, Express.js  
+- **Backend:** Node.js, Express.js, Redis,bullmq 
 - **Database:** MongoDB  
 - **Language:** JavaScript  
 
@@ -24,6 +24,7 @@ It provides users with a seamless shopping experience including product browsing
 - Responsive UI for all devices
 - Smooth animations using Framer Motion
 - Optimized API calls using RTK Query
+- Redis for Caching and BullMQ for Background jobs (OTP,Welcome Mail)
 
 ---
 

@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/user.js");
 const { sendMail } = require("../services/resend.js")
-const TempUser = require("../models/tempUser.js");
 const { OAuth2Client } = require("google-auth-library");
 const { sendWelcomeMail } = require("../services/welcomeMail.js");
 const { redis } = require("../config/redis.js");
@@ -272,9 +271,6 @@ const fetchUser = async (req, res) => {
     try {
         let token = req.cookies?.accessToken;
 
-        if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
-            token = req.headers.authorization.split(" ")[1];
-        }
 
         if (!token || token === "null" || token === "undefined") {
             return res.status(400).json({ message: "Token is required" });
@@ -286,9 +282,75 @@ const fetchUser = async (req, res) => {
 
         res.status(200).json(user);
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
+
+const forgotPasswordSendOtp = async (req, res) => {
+    console.log("req rec")
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        if (user.provider === "google") {
+            return res.status(400).json({ message: "User is logged in with google" });
+        }
+        const FORGOT_OTP_KEY = `forgot-otp:${user._id}`;
+        const RESEND_KEY = `resend:${user._id}`;
+        const cooldown = await redis.get(RESEND_KEY);
+        const ttl = await redis.ttl(RESEND_KEY);
+        if (cooldown) return res.status(400).json({ message: `Please wait ${ttl} seconds before resending OTP` });
+        const otp = Math.floor(10000 + Math.random() * 90000);
+        await redis.set(FORGOT_OTP_KEY, otp, "EX", 600);
+        await redis.set(RESEND_KEY, 1, "EX", 60);
+        await emailQueue.add("forgotPasswordOtpMail", { to: user.email, name: user.name, otp }, {
+            backoff: {
+                delay: 200,
+                type: "exponential"
+            },
+            attempts: 3,
+            removeOnComplete: true,
+            removeOnFail: true
+        })
+
+        res.status(200).json({ message: "Otp sent successfully" })
+
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+        console.log(err)
+    }
+}
+
+const forgotPasswordVerifyOtp = async (req, res) => {
+    try {
+        const { email, otp, password } = req.body;
+        if (!email || !otp || !password) return res.status(400).json({ message: "Email, Otp and new password are required" })
+        const user = await User.findOne({ email })
+        if (!user) return res.status(404).json({ message: "User not found" })
+        if (user.provider === "google") {
+            return res.status(400).json({ message: "User is logged in with google" });
+        }
+        const FORGOT_OTP_KEY = `forgot-otp:${user._id}`;
+        const savedOtp = await redis.get(FORGOT_OTP_KEY);
+        if (!savedOtp || String(savedOtp) !== String(otp)) {
+            return res.status(401).json({ message: "Invalid or expired otp" });
+        }
+        const newPassword = await bcrypt.hash(password, 10)
+        user.password = newPassword;
+        await user.save();
+        await redis.del(FORGOT_OTP_KEY);
+        const { accessToken, refreshToken } = generateToken(user);
+        await redis.set(`refresh:${user._id}`, refreshToken, "EX", 7 * 24 * 60 * 60);
+        res.cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 });
+        res.cookie("refreshToken", refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        res.status(200).json({ message: "Otp verified successfully" })
+    } catch (err) {
+        res.status(401).json({ message: err.message })
+    }
+}
+
 const logout = async (req, res) => {
     try {
         const { refreshToken } = req.cookies;
@@ -331,7 +393,7 @@ const address = async (req, res) => {
 
 };
 
-module.exports = { sendOtp, verifyOtp, login, googleLogin, fetchUser, address, refreshAccessToken, logout }
+module.exports = { sendOtp, verifyOtp, login, googleLogin, fetchUser, address, refreshAccessToken, logout, forgotPasswordSendOtp, forgotPasswordVerifyOtp }
 
 
 

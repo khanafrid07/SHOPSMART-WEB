@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loginUser, logout } from "./authSlice";
+import { loginUser, logout, forgotPasswordSendOtp, forgotPasswordVerifyOtp } from "./authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
@@ -7,13 +7,16 @@ import { notifyError, notifySuccess } from "../../utils/notify";
 import { useNavigate } from "react-router-dom";
 import { ShoppingBag } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
+import ForgotPassword from "./ForgotPassword";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [switchForm, setSwitchForm] = useState(() => {
     return window.location.pathname.includes("register")
       ? "register"
-      : "login";
+      : window.location.pathname.includes("forgot-password")
+        ? "forgot-password"
+        : "login"
   });
   const [name, setName] = useState("");
   const [step, setStep] = useState("form");
@@ -98,7 +101,7 @@ export default function Login() {
             </p>
           </div> */}
 
-          {switchForm === "login" ? (
+          {switchForm === "login" && (
             <LoginForm
               key={"login"}
               email={email}
@@ -111,7 +114,8 @@ export default function Login() {
               switchForm={switchForm}
               setSwitchForm={setSwitchForm}
             />
-          ) : (
+          )}
+          {switchForm === "register" && (
             <RegisterForm
               key={"register"}
               email={email}
@@ -121,6 +125,21 @@ export default function Login() {
               handleSubmit={handleSubmit}
               otpLoading={otpLoading}
 
+              error={error}
+              switchForm={switchForm}
+              setSwitchForm={setSwitchForm}
+              name={name}
+              setName={setName}
+              step={step}
+              setStep={setStep}
+            />
+          )}
+          {switchForm === "forgot-password" && (
+            <ForgotPassword
+              key={"forgot-password"}
+              email={email}
+              setEmail={setEmail}
+              otpLoading={otpLoading}
               error={error}
               switchForm={switchForm}
               setSwitchForm={setSwitchForm}
