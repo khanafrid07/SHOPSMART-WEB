@@ -1,16 +1,12 @@
-const { Queue } = require("bullmq")
+const { Queue } = require("bullmq");
+const IORedis = require("ioredis");
 
-
-
-const connection = {
-    host: "localhost",
-    port: 6379,
-
-}
+const connection = new IORedis(process.env.REDIS_URL, {
+    maxRetriesPerRequest: null,
+});
 
 const emailQueue = new Queue("emailQueue", {
     connection
 });
 
-
-module.exports = { emailQueue, connection }
+module.exports = { emailQueue, connection };
