@@ -271,9 +271,8 @@ const fetchUser = async (req, res) => {
     try {
         let token = req.cookies?.accessToken;
 
-
         if (!token || token === "null" || token === "undefined") {
-            return res.status(400).json({ message: "Token is required" });
+            return res.status(401).json({ message: "Unauthorized, no token provided" });
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -282,7 +281,8 @@ const fetchUser = async (req, res) => {
 
         res.status(200).json(user);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+
+        res.status(401).json({ message: "Invalid or expired token" });
     }
 };
 
@@ -354,20 +354,28 @@ const forgotPasswordVerifyOtp = async (req, res) => {
 const logout = async (req, res) => {
     try {
         const { refreshToken } = req.cookies;
-        if (!refreshToken) {
-            return res.status(400).json({ message: "Refresh Token not found" })
+        
+        const clearOptions = { 
+            httpOnly: true, 
+            sameSite: "strict", 
+            secure: process.env.NODE_ENV === "production"
+        };
+        
+        res.clearCookie("accessToken", clearOptions);
+        res.clearCookie("refreshToken", clearOptions);
+        
+        if (refreshToken) {
+            try {
+                const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+                await redis.del(`refresh:${decoded.id}`);
+            } catch (err) {
+                // Ignore invalid tokens during logout
+            }
         }
-        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-        const storedRefreshToken = await redis.get(`refresh:${decoded.id}`);
-        if (!storedRefreshToken || storedRefreshToken !== refreshToken) {
-            return res.status(401).json({ message: "Invalid or expired refresh token" });
-        }
-        await redis.del(`refresh:${decoded.id}`);
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken");
-        res.status(200).json({ message: "Logout successful" })
+        
+        res.status(200).json({ message: "Logout successful" });
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 }
 

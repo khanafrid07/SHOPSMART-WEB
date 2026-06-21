@@ -1,12 +1,10 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "../../baseQueryWithReauth";
 
 export const cartApi = createApi({
   reducerPath: "cartApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_URL}/api/cart` || "http://localhost:8080/api/cart",
-    credentials: "include"
-  }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["Cart"],
   endpoints: (builder) => ({
 
@@ -14,7 +12,7 @@ export const cartApi = createApi({
       query: (params = { count: false }) => {
         const query = new URLSearchParams();
         params?.count && query.append("count", params.count);
-        return `/?${query}`;
+        return `/cart/?${query}`;
       },
       providesTags: ["Cart"],
     }),
@@ -22,7 +20,7 @@ export const cartApi = createApi({
 
     addToCart: builder.mutation({
       query: ({ productId, quantity, variantId }) => ({
-        url: "/add",
+        url: "/cart/add",
         method: "POST",
         body: { productId, quantity, variantId },
       }),
@@ -32,7 +30,7 @@ export const cartApi = createApi({
 
     updateCartItem: builder.mutation({
       query: ({ productId, variantId, quantity }) => ({
-        url: `/update`,
+        url: `/cart/update`,
         method: "PUT",
         body: { productId, variantId, quantity },
       }),
@@ -41,7 +39,7 @@ export const cartApi = createApi({
 
     removeCartItem: builder.mutation({
       query: ({ productId, variantId }) => ({
-        url: `/remove/${productId}/${variantId}`,
+        url: `/cart/remove/${productId}/${variantId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Cart"],
@@ -49,7 +47,7 @@ export const cartApi = createApi({
 
     clearCart: builder.mutation({
       query: () => ({
-        url: "/clear",
+        url: "/cart/clear",
         method: "DELETE",
       }),
       invalidatesTags: ["Cart"],

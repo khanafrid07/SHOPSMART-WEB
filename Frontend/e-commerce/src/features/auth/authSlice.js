@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-const BaseUrl = import.meta.env.VITE_API_URL + "/api/auth"
-
+import api from "../../api.js"
+// const BaseUrl = import.meta.env.VITE_API_URL + "/api/auth"
+const BaseUrl = "http://localhost:8080/api/auth"
 
 export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/send-otp`, data, { withCredentials: true });
+    const res = await api.post(`auth/send-otp`, data, { withCredentials: true });
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to send OTP")
@@ -13,7 +14,7 @@ export const sendOtp = createAsyncThunk("auth/sendOtp", async (data, { rejectWit
 })
 export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/verify-otp`, data, { withCredentials: true });
+    const res = await api.post(`auth/verify-otp`, data, { withCredentials: true });
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to verify OTP")
@@ -24,7 +25,7 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${BaseUrl}/login`, data, { withCredentials: true });
+      const res = await api.post(`auth/login`, data, { withCredentials: true });
       return res.data;
     } catch (err) {
 
@@ -34,7 +35,7 @@ export const loginUser = createAsyncThunk(
 );
 export const loginWithGoogle = createAsyncThunk("auth/google", async (token, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/google`, { token }, { withCredentials: true });
+    const res = await api.post(`auth/google`, { token }, { withCredentials: true });
     return res.data
   } catch (err) {
 
@@ -44,7 +45,7 @@ export const loginWithGoogle = createAsyncThunk("auth/google", async (token, { r
 
 export const logoutUser = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/logout`, {}, { withCredentials: true });
+    const res = await api.post(`auth/logout`, {}, { withCredentials: true });
     return res.data
   } catch (err) {
 
@@ -53,7 +54,7 @@ export const logoutUser = createAsyncThunk("auth/logout", async (_, { rejectWith
 })
 export const forgotPasswordSendOtp = createAsyncThunk("/auth/forgot-password/send-otp", async (email, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/forgot-password/send-otp`, { email })
+    const res = await api.post(`auth/forgot-password/send-otp`, { email })
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to send OTP")
@@ -61,7 +62,7 @@ export const forgotPasswordSendOtp = createAsyncThunk("/auth/forgot-password/sen
 })
 export const forgotPasswordVerifyOtp = createAsyncThunk("/auth/forgot-password/verify-otp", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${BaseUrl}/forgot-password/verify-otp`, data, { withCredentials: true })
+    const res = await api.post(`auth/forgot-password/verify-otp`, data, { withCredentials: true })
     return res.data
   } catch (error) {
     return rejectWithValue(error?.response?.data?.message || "Failed to verify OTP")
@@ -73,13 +74,7 @@ export const addAddress = createAsyncThunk(
   async (data, { rejectWithValue, dispatch }) => {
     try {
 
-      const res = await axios.post(
-        `${BaseUrl}/address`,
-        data,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await api.post(`auth/address`, data);
 
       dispatch(setCurrentAddress(res.data.address))
       return res.data;
@@ -93,9 +88,7 @@ export const fetchUser = createAsyncThunk(
   "auth/fetchUser",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${BaseUrl}/fetchUser`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`auth/fetchUser`);
       return res.data;
     } catch (err) {
       return rejectWithValue(
@@ -129,6 +122,9 @@ const authSlice = createSlice({
     setCurrentAddress: (state, action) => {
       state.currentAddress = action.payload
       localStorage.setItem("currentAddress", JSON.stringify(action.payload));
+    },
+    clearError: (state) => {
+      state.error = null;
     }
   },
   extraReducers: (builder) => {
@@ -225,7 +221,7 @@ const authSlice = createSlice({
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        // Not setting error here as it's an expected state for unauthenticated users
         state.authChecked = true
       })
 
@@ -256,5 +252,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setCurrentAddress, setAuthChecked } = authSlice.actions;
+export const { logout, setCurrentAddress, setAuthChecked, clearError } = authSlice.actions;
 export default authSlice.reducer;

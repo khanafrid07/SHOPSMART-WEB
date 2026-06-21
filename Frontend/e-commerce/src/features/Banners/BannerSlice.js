@@ -1,16 +1,9 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "../../baseQueryWithReauth";
 
 export const bannerApi = createApi({
     reducerPath: "bannerApi",
-    baseQuery: fetchBaseQuery({
-        baseUrl: `${import.meta.env.VITE_API_URL}/api` || "http://localhost:8080/api", prepareHeaders: (headers) => {
-            const token = localStorage.getItem("token")
-            if (token) {
-                headers.set("Authorization", `Bearer ${token}`)
-            }
-            return headers
-        }
-    }),
+    baseQuery: baseQueryWithReauth,
     tagTypes: ["banners"],
     endpoints: (builder) => ({
         getBanner: builder.query({
@@ -60,7 +53,7 @@ export const bannerApi = createApi({
 
         deleteBanner: builder.mutation({
             query: (id) => ({
-                url: `/banners/${id}`,
+                url: `/api/banners/${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["banners"]
