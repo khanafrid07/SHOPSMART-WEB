@@ -1,21 +1,13 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "../../baseQueryWithReauth";
 
 export const dashboardApi = createApi({
     reducerPath: "dashboardApi",
-    baseQuery: fetchBaseQuery({
-        baseUrl: `${import.meta.env.VITE_API_URL}/api` || "http://localhost:8080/api", prepareHeaders: (headers) => {
-            const token = localStorage.getItem("token")
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`)
-            }
-            return headers
-        }
-    }),
+    baseQuery: baseQueryWithReauth,
     tagTypes: ["dashboard"],
     endpoints: (builder) => ({
         getDashboardStats: builder.query({
             query: () => {
-                ("API CALLED")
                 return "/dashboard/stats"
             },
 
