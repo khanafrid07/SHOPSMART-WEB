@@ -118,7 +118,7 @@ const getProducts = async (req, res) => {
             .limit(limit ? Number(limit) : undefined);
 
         // Cache even empty results to prevent cache penetration
-        await redis.set(PRODUCT_CACHE_KEY, JSON.stringify(allProducts), "EX", 60);
+        await redis.set(PRODUCT_CACHE_KEY, JSON.stringify(allProducts), "EX", 300);//will expire in 5 minutes
         console.log(`[getProducts] Cached results in Redis for key: "${PRODUCT_CACHE_KEY}"`);
         return res.status(200).json({ allProducts });
 
@@ -146,7 +146,7 @@ const getProductById = async (req, res) => {
         const product = await Product.findById(id).populate("reviews");
         if (!product) return res.status(404).json({ message: "Product Not Found!" });
 
-        await redis.set(PRODUCT_CACHE_KEY, JSON.stringify(product), "EX", 60);
+        await redis.set(PRODUCT_CACHE_KEY, JSON.stringify(product), "EX", 60);//will expire in 1 minute
         res.status(200).json({ product });
     } catch (err) {
         res.status(500).json({ message: "Error fetching product", error: err.message });

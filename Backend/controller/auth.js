@@ -18,7 +18,7 @@ const generateToken = (user) => {
 const cookieOptions = {
     maxAge: 15 * 60 * 1000,
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     secure: process.env.NODE_ENV === "production"
 }
 
@@ -354,16 +354,16 @@ const forgotPasswordVerifyOtp = async (req, res) => {
 const logout = async (req, res) => {
     try {
         const { refreshToken } = req.cookies;
-        
-        const clearOptions = { 
-            httpOnly: true, 
-            sameSite: "strict", 
+
+        const clearOptions = {
+            httpOnly: true,
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
             secure: process.env.NODE_ENV === "production"
         };
-        
+
         res.clearCookie("accessToken", clearOptions);
         res.clearCookie("refreshToken", clearOptions);
-        
+
         if (refreshToken) {
             try {
                 const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
@@ -372,7 +372,7 @@ const logout = async (req, res) => {
                 // Ignore invalid tokens during logout
             }
         }
-        
+
         res.status(200).json({ message: "Logout successful" });
     } catch (err) {
         res.status(500).json({ message: err.message });
