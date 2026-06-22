@@ -12,6 +12,8 @@ export default function BannerFormFields({
   onSubmit,
   isEdit,
   isLoading,
+  creatingBanner,
+  updatingBanner,
 }) {
   return (
     <form onSubmit={onSubmit} className="space-y-6">
@@ -247,7 +249,7 @@ export default function BannerFormFields({
 
       {/* SUBMIT */}
       <button className="btn btn-primary w-full">
-        {isEdit ? "Update Banner" : "Save Banner"}
+        {creatingBanner || updatingBanner ? "Saving..." : isEdit ? "Update Banner" : "Save Banner"}
       </button>
 
     </form>

@@ -39,13 +39,13 @@ export default function Home() {
             {popup &&
                 <LoginPopup onClose={handleClose} />
             }
-            <main className="w-full  sm:pl-3 overflow-x-hidden">
+            <main className="w-full px-4 sm:pl-3 overflow-x-hidden">
                 <CategorySection />
                 {/* <FlashSaleSection /> */}
 
 
                 <FeaturedProduct />
-                <div className="px-8 py-16">
+                <div className="px-2 sm:px-8 py-10 sm:py-16">
                     {isLoading ?
                         <BannerSkeleton />
                         : <BannerSlot banners={bannner} placement="home_middle" rounded={true} />}

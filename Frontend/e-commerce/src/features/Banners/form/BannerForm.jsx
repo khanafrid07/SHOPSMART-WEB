@@ -5,8 +5,10 @@ import { useParams } from "react-router-dom";
 import { useGetBannerByIdQuery, useCreateBannerMutation, useUpdateBannerMutation } from "../BannerSlice";
 import BannerScheduler from "../components/BannerSchedule";
 import { notifyError, notifySuccess } from "../../../utils/notify";
+import { useNavigate } from "react-router-dom";
 
 export default function BannerForm() {
+  const navigate = useNavigate()
   const { id } = useParams();
   const isEdit = Boolean(id);
 
@@ -14,8 +16,8 @@ export default function BannerForm() {
     skip: !id,
   });
   ("edit banner", data)
-  const [createBanner] = useCreateBannerMutation()
-  const [updateBanner] = useUpdateBannerMutation()
+  const [createBanner, { isLoading: creatingBanner }] = useCreateBannerMutation()
+  const [updateBanner, { isLoading: updatingBanner }] = useUpdateBannerMutation()
   const [form, setForm] = useState({
     title: "",
     heading: "",
@@ -52,6 +54,7 @@ export default function BannerForm() {
         schedule: b.schedule ?? { startDate: undefined, endDate: undefined }
       });
     }
+    console.log(form.image, "img baner")
   }, [data]);
   useEffect(() => {
     if (!form.preview) return;
@@ -111,6 +114,7 @@ export default function BannerForm() {
       try {
         await updateBanner({ id, formData }).unwrap()
         notifySuccess("Banner updated success")
+        navigate("/dashboard/banners")
 
       } catch (err) {
         notifyError("error updating banner", err)
@@ -121,6 +125,7 @@ export default function BannerForm() {
 
         await createBanner(formData).unwrap()
         notifySuccess("Banner created success")
+        navigate("/dashboard/banners")
       } catch (err) {
         notifyError("error creating banner")
 
@@ -160,6 +165,8 @@ export default function BannerForm() {
         onSubmit={handleSubmit}
         isEdit={isEdit}
         isLoading={isLoading}
+        creatingBanner={creatingBanner}
+        updatingBanner={updatingBanner}
       />
     </div>
   );

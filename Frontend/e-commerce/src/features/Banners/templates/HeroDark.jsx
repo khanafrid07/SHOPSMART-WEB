@@ -11,7 +11,7 @@ export default function HeroDark({ banner }) {
         initial={{ scale: 1.05 }}
         animate={{ scale: 1 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
-        src={banner.image?.url}
+        src={banner.image || banner.image?.url}
         alt={banner.title}
         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
       />

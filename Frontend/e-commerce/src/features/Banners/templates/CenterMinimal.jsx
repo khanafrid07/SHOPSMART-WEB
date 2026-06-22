@@ -10,7 +10,7 @@ export default function CenterMinimal({ banner, rounded = true }) {
         initial={{ scale: 1.05 }}
         animate={{ scale: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
-        src={banner.image?.url}
+        src={banner.image || banner.image?.url}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
       />
 

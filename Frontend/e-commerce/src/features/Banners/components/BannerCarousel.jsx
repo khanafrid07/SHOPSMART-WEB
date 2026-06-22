@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import BannerRenderer from "./BannerRenderer";
 
-export default function BannerCarousel({ banners = [], rounded = true, interval = 4000 }) {
+export default function BannerCarousel({ banners = [], rounded = true, interval = 3000 }) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const touchStartX = useRef(null);
@@ -85,8 +85,8 @@ export default function BannerCarousel({ banners = [], rounded = true, interval 
                             onClick={() => goTo(i)}
                             aria-label={`Go to banner ${i + 1}`}
                             className={`h-2 rounded-full transition-all duration-300 ${i === activeIndex
-                                    ? "w-7 sm:w-8 bg-gradient-to-r from-primary to-secondary"
-                                    : "w-2 bg-white/60 hover:bg-white/90"
+                                ? "w-7 sm:w-8 bg-gradient-to-r from-primary to-secondary"
+                                : "w-2 bg-white/60 hover:bg-white/90"
                                 }`}
                         />
                     ))}

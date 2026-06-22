@@ -9,7 +9,7 @@ export function SplitBanner({ banner }) {
 
       {/* Left Content */}
       <div className="flex flex-col justify-center px-8 py-12 lg:px-16 xl:px-20 relative overflow-hidden bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80">
-        
+
         {/* Decorative elements */}
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
         <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-secondary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
@@ -29,7 +29,7 @@ export function SplitBanner({ banner }) {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-neutral leading-[1.1] mb-6">
             {banner.title}
           </h2>
-          
+
           {banner.heading && (
             <p className="text-base sm:text-lg text-neutral/70 font-medium leading-relaxed mb-8 max-w-md">
               {banner.heading}
@@ -56,7 +56,7 @@ export function SplitBanner({ banner }) {
           initial={{ scale: 1.05 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
-          src={banner.image?.url}
+          src={banner.image || banner.image?.url}
           alt={banner.title}
           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
         />

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export function CleanImage({ banner, rounded = false }) {
   const navigate = useNavigate();
   return (
-    <div className={`relative h-[55vh] md:h-[75vh] w-full ${rounded ? "rounded-2xl md:rounded-3xl shadow-2xl" : "rounded-none"} overflow-hidden group`}>
+    <div className={`relative h-[50vh] md:h-[75vh] w-full ${rounded ? "rounded-sm md:rounded-3xl shadow-2xl" : "rounded-none"} overflow-hidden group`}>
 
       {/* Image */}
       <motion.img
@@ -26,7 +26,7 @@ export function CleanImage({ banner, rounded = false }) {
         >
           {banner.subHeading && (
             <p className="text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white mb-4 flex items-center gap-2">
-              <span className="w-8 h-px bg-white"></span>
+              <span className="sm:w-8 h-px bg-white"></span>
               {banner.subHeading}
             </p>
           )}

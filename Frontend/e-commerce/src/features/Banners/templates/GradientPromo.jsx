@@ -35,7 +35,7 @@ export default function GradientPromo({ banner }) {
           transition={{ duration: 0.6 }}
           className="max-w-xl"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold leading-tight tracking-tight mb-3">
+          <h2 className="text-gray-300 text-2xl sm:text-3xl md:text-5xl font-extrabold leading-tight tracking-tight mb-3">
             {banner.title}
           </h2>
 
@@ -55,7 +55,7 @@ export default function GradientPromo({ banner }) {
               e.stopPropagation();
               banner.ctaLink && navigate(banner.ctaLink);
             }}
-            className="mt-6 sm:mt-0 px-6 sm:px-8 py-3 bg-white text-black rounded-full text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:bg-gray-100 transition-all flex items-center gap-2"
+            className="mt-3 sm:mt-0 px-4 sm:px-8 py-3 bg-gray-200 text-black/80 rounded-full text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:bg-gray-100 transition-all flex items-center gap-2"
           >
             {banner.ctaText}
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />

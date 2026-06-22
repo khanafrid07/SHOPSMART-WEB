@@ -46,7 +46,7 @@ export default function NewArrivals({ category, gender }) {
 
 
   return (
-    <section id="new-arrivals" className="relative sm:px-6 md:px-8 lg:px-10 w-full max-w-full overflow-hidden py-12 md:py-20">
+    <section id="new-arrivals" className="relative sm:px-6 md:px-8 lg:px-10 w-full max-w-full overflow-hidden ">
 
       {/*  header */}
       <div className="mb-8 md:mb-12 flex items-end justify-between">
