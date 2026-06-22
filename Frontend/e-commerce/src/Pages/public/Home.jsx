@@ -11,7 +11,11 @@ import { useSelector } from "react-redux";
 import { FlashSaleSection } from "../../layout/components/FlashsaleSection";
 import { PromoBanner } from "../../layout/components/PromotionalBanner";
 import { ReviewSection } from "../../layout/components/CustomerReviews";
+import BannerSlot from "../../features/Banners/components/BannerSlot";
+import { useGetBannerQuery } from "../../features/Banners/BannerSlice";
+import BannerSkeleton from "../../components/skeletons/BannerSkeleton";
 export default function Home() {
+    const { data: bannner, isLoading } = useGetBannerQuery({ type: "hero" })
     const user = useSelector((state) => state.auth.user);
     const [popup, setPopup] = useState(false);
     useEffect(() => {
@@ -35,18 +39,20 @@ export default function Home() {
             {popup &&
                 <LoginPopup onClose={handleClose} />
             }
-            <main className="w-full px-4  sm:pl-3 overflow-x-hidden">
+            <main className="w-full sm:pl-3 overflow-x-hidden">
                 <CategorySection />
                 {/* <FlashSaleSection /> */}
 
 
                 <FeaturedProduct />
-                {/* <PromoBanner /> */}
+                {isLoading ? <div className="container mx-auto">
+                    <BannerSkeleton />
+                </div> : <BannerSlot placement="home_middle" rounded={true} />}
                 <TrendingProducts />
                 <FashionCollection />
 
                 <NewArrivals />
-                {/* <ReviewSection /> */}
+                <ReviewSection />
                 <OfferSignup />
 
 
