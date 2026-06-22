@@ -130,22 +130,15 @@ export default function BannerForm() {
   if (isLoading) return <p>Loading</p>
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+    <div className="grid grid-cols-1 gap-2">
       {/* LEFT: FORM */}
-      <BannerFormFields
-        form={form}
-        onChange={handleChange}
-        onImageUpload={handleImageUpload}
-        onSubmit={handleSubmit}
-        isEdit={isEdit}
-        isLoading={isLoading}
-      />
 
 
-      <div className="sticky top-6 space-y-3">
+
+      <div className=" space-y-3">
         <h2 className="text-lg font-semibold">Live Preview</h2>
 
-        <div className="rounded-2xl   overflow-hidden border bg-base-200">
+        <div className="rounded-2xl overflow-hidden border bg-base-200 ">
           <BannerRenderer
             banner={{
               ...form,
@@ -155,11 +148,19 @@ export default function BannerForm() {
             }}
           />
         </div>
-        <div>
+        {/* <div>
           <BannerScheduler form={form} handleChange={handleScheduleChange} />
 
-        </div>
+        </div> */}
       </div>
+      <BannerFormFields
+        form={form}
+        onChange={handleChange}
+        onImageUpload={handleImageUpload}
+        onSubmit={handleSubmit}
+        isEdit={isEdit}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

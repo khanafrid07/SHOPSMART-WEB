@@ -13,13 +13,13 @@ export default function CategorySection() {
   const categories = [
     { img: Fashion, label: "Fashion", icon: ShoppingBag, color: "from-purple-500 to-pink-500" },
     { img: Beauty, label: "Beauty", icon: Sparkles, color: "from-pink-500 to-rose-500" },
-    { img: Accessories, label: "Accessories", icon: ShoppingBag, color: "from-blue-500 to-cyan-500" },
-    { img: Footwear, label: "Footwear", icon: Zap, color: "from-orange-500 to-red-500" },
+    { img: Accessories, label: "Accessories", icon: ShoppingBag, color: "from-violet-500 to-purple-500" },
+    { img: Footwear, label: "Footwear", icon: Zap, color: "from-fuchsia-500 to-pink-500" },
   ];
 
   return (
     <section id="category" className="w-full py-10 sm:py-14 md:py-20 bg-gradient-to-b from-white to-gray-50">
-      <div className="max-w-full mx-auto  sm:px-8 lg:px-16">
+      <div className="max-w-full mx-auto px-4 sm:px-8 lg:px-16">
 
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
@@ -59,7 +59,13 @@ export default function CategorySection() {
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 200 }}
                 onClick={() => navigate(`/category/${cat.label}`)}
-                className="group cursor-pointer"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") navigate(`/category/${cat.label}`);
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Shop ${cat.label}`}
+                className="group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl"
               >
                 <div className="relative h-40 sm:h-56 md:h-64 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
 
@@ -84,7 +90,7 @@ export default function CategorySection() {
                       {cat.label}
                     </h3>
 
-                    <div className="flex items-center gap-1 text-xs sm:text-sm text-white/80 mt-1 opacity-0 group-hover:opacity-100 transition">
+                    <div className="flex items-center gap-1 text-xs sm:text-sm text-white/70 mt-1 group-hover:text-white group-hover:gap-2 transition-all duration-300">
                       Explore
                       <ArrowRight size={14} />
                     </div>
@@ -94,7 +100,6 @@ export default function CategorySection() {
             );
           })}
         </motion.div>
-
 
       </div>
     </section>

@@ -8,6 +8,9 @@ import OfferSignup from "../../components/sections/OfferSignup";
 import LoginPopup from "../../components/sections/LoginPopup";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { FlashSaleSection } from "../../layout/components/FlashsaleSection";
+import { PromoBanner } from "../../layout/components/PromotionalBanner";
+import { ReviewSection } from "../../layout/components/CustomerReviews";
 export default function Home() {
     const user = useSelector((state) => state.auth.user);
     const [popup, setPopup] = useState(false);
@@ -34,12 +37,16 @@ export default function Home() {
             }
             <main className="w-full px-4  sm:pl-3 overflow-x-hidden">
                 <CategorySection />
+                {/* <FlashSaleSection /> */}
 
 
                 <FeaturedProduct />
+                {/* <PromoBanner /> */}
                 <TrendingProducts />
                 <FashionCollection />
+
                 <NewArrivals />
+                {/* <ReviewSection /> */}
                 <OfferSignup />
 
 

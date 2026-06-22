@@ -31,12 +31,12 @@ export default function BannerFormFields({
       </div>
 
       {/* CONTENT */}
-      <div className="card bg-base-100 shadow">
-        <div className="card-body space-y-4">
+      <div className="card bg-base-100 shadow p-5">
+        <h3 className="font-semibold flex items-center gap-2">
+          <Type size={16} /> Content
+        </h3>
+        <div className="gap-4 grid grid-cols-2">
 
-          <h3 className="font-semibold flex items-center gap-2">
-            <Type size={16} /> Content
-          </h3>
 
           {/* Title */}
           <div className="form-control">
@@ -102,12 +102,12 @@ export default function BannerFormFields({
       </div>
 
       {/* CTA */}
-      <div className="card bg-base-100 shadow">
-        <div className="card-body space-y-4">
+      <div className="card bg-base-100 shadow p-5">
+        <h3 className="font-semibold flex items-center gap-2">
+          <LinkIcon size={16} /> CTA
+        </h3>
+        <div className="gap-4 grid grid-cols-2">
 
-          <h3 className="font-semibold flex items-center gap-2">
-            <LinkIcon size={16} /> CTA
-          </h3>
 
           {/* CTA Text */}
           <div className="form-control">
@@ -140,12 +140,12 @@ export default function BannerFormFields({
       </div>
 
       {/* SETTINGS */}
-      <div className="card bg-base-100 shadow">
-        <div className="card-body space-y-4">
+      <div className="card bg-base-100 shadow p-5">
+        <h3 className="font-semibold flex items-center gap-2">
+          <Layers size={16} /> Settings
+        </h3>
+        <div className="gap-4 grid grid-cols-2">
 
-          <h3 className="font-semibold flex items-center gap-2">
-            <Layers size={16} /> Settings
-          </h3>
 
           {/* TYPE */}
           <div className="form-control">
@@ -229,7 +229,7 @@ export default function BannerFormFields({
           </div>
 
           {/* ACTIVE */}
-          <div className="form-control">
+          <div className="form-control flex items-center mt-4">
             <label className="label cursor-pointer">
               <span className="label-text">Active</span>
               <input
