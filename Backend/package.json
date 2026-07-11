@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js --host 0.0.0.0"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",

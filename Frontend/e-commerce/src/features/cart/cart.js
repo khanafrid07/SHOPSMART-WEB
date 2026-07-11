@@ -14,7 +14,7 @@ export const cartApi = createApi({
         params?.count && query.append("count", params.count);
         return `/cart/?${query}`;
       },
-      providesTags: ["Cart"],
+      // providesTags: ["Cart"],
     }),
 
 
@@ -24,7 +24,7 @@ export const cartApi = createApi({
         method: "POST",
         body: { productId, quantity, variantId },
       }),
-      invalidatesTags: ["Cart"],
+      // invalidatesTags: ["Cart"],
     }),
 
 
@@ -34,7 +34,7 @@ export const cartApi = createApi({
         method: "PUT",
         body: { productId, variantId, quantity },
       }),
-      invalidatesTags: ["Cart"],
+      // invalidatesTags: ["Cart"],
     }),
 
     removeCartItem: builder.mutation({

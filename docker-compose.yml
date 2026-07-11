@@ -1,0 +1,36 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-e-commerce
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-e-commerce
+    volumes:
+      - mongodb_data:/data/db
+
+  backend:
+    image: khaafrid/shopsmart_backend:latest
+    container_name: backend-e-commerce
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/shopsmart
+    depends_on:
+      - mongodb
+      - redis
+
+  frontend:
+    image: khaafrid/shopsmart_frontend:latest
+    container_name: frontend-e-commerce
+    ports:
+      - "5173:5173"
+
+volumes:
+  redis_data:
+  mongodb_data:
+

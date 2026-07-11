@@ -24,7 +24,7 @@ export default function ProductDetail() {
     useEffect(() => {
         if (product) {
             const selectVariantByStock = product?.variants?.find((v) => v.stock > 0)
-            console.log("selectVariantByStock", selectVariantByStock)
+
             if (selectVariantByStock) {
                 setSelectedVariant(selectVariantByStock)
 
@@ -36,8 +36,6 @@ export default function ProductDetail() {
 
         }
     }, [product])
-    console.log("selectedvariant", selectedVariant)
-    console.log("product", product)
 
 
     const handleAddToCart = async () => {

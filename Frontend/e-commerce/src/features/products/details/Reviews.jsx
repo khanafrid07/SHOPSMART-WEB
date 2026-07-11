@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import Alert from "../../../components/Alert";
 import { Star } from "lucide-react";
 import { notifyError, notifySuccess } from "../../../utils/notify";
-import AverageRating from "../components/AverageRating";
+import AverageRating from "../reviews/AverageRating";
 export default function Reviews({ reviews, refetch }) {
   const [createReviews] = useCreateReviewsMutation();
   const { id } = useParams();
@@ -16,7 +16,6 @@ export default function Reviews({ reviews, refetch }) {
     comment: "",
     productId: id,
   });
-
   const [hover, setHover] = useState(0);
 
   const [page, setPage] = useState(0);

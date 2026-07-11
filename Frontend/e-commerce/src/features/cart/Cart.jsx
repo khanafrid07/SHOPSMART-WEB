@@ -18,6 +18,7 @@ export default function Cart() {
     const handleQuantityIncrease = async (item, variantId, quantity) => {
         try {
             await updateCartItem({ productId: item, variantId, quantity: quantity + 1 }).unwrap()
+            console.log("cart updated successfully")
         }
         catch (error) {
             (error)

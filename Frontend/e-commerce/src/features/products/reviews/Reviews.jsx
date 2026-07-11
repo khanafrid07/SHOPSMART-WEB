@@ -16,7 +16,6 @@ export default function Reviews({ reviews, refetch }) {
     comment: "",
     productId: id,
   });
-  console.log(review, "review")
 
   const [hover, setHover] = useState(0);
 
@@ -39,7 +38,7 @@ export default function Reviews({ reviews, refetch }) {
         return
       }
       const response = await createReviews(review).unwrap();
-      console.log(response, "response")
+
       notifySuccess(response?.message)
       refetch()
 

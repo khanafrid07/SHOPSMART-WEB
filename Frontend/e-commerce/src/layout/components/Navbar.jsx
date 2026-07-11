@@ -9,7 +9,7 @@ import Modal from "../../components/common/Modal";
 import { useGetCartQuery } from "../../features/cart/cart";
 export default function Navbar({ wishCount = 0 }) {
   const user = useSelector((state) => state.auth.user);
-  const { data, isLoading, refetch } = useGetCartQuery({ count: true }, { skip: !user, refetchOnMountOrArgChange: true });
+  const { data, isLoading, refetch } = useGetCartQuery({ count: true }, { skip: !user });
   const cartCounts = data?.count || 0;
 
   // const [cartCounts, setCartCounts] = useState(0)
