@@ -4,7 +4,7 @@ import { forgotPasswordSendOtp, forgotPasswordVerifyOtp } from "./authSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { notifyError, notifySuccess } from "../../utils/notify";
-export default function ForgotPassword() {
+export default function ForgotPassword({setSwitchForm}) {
     const dispatch = useDispatch()
     const [step, setStep] = useState("email")
     const [email, setEmail] = useState("")
@@ -54,7 +54,10 @@ export default function ForgotPassword() {
     }
     return (
         <>
-            <div className="p-8 flex flex-col items-center gap-2">
+            <div className="p-8 relative flex flex-col items-center gap-2">
+                <button className= "btn absolute left-0 top-8 btn-ghost hover:border-none" onClick={() => setSwitchForm("login")}>
+                    Back
+                </button>
                 <div className="flex justify-center items-center gap-2 mb-2 font-bold">
                     <span className="text-2xl bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">Shop</span>
                     <span className="text-2xl bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-blue-600">Smart</span>
