@@ -12,6 +12,7 @@ It provides users with a seamless shopping experience including product browsing
 - **Backend:** Node.js, Express.js, Redis,bullmq 
 - **Database:** MongoDB  
 - **Language:** JavaScript  
+- **Docker**
 
 ---
 
@@ -56,3 +57,6 @@ npm install
 
 # Start development server
 npm run dev
+
+#Using Docker
+you can run through docker compose yml by creating env example

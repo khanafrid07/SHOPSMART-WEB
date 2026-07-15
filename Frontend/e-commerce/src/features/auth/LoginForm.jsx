@@ -68,7 +68,7 @@ export default function LoginForm({
         </div>
         {/* Forgot Password */}
         <div className="text-right">
-          <button onClick={() => setSwitchForm("forgot-password")} className="text-xs text-blue-600 hover:underline">Forgot password?</button>
+          <button type="btn" onClick={() => setSwitchForm("forgot-password")} className="text-xs text-blue-600 hover:underline">Forgot password?</button>
         </div>
 
         {/* Error */}
